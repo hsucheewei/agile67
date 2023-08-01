@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="Register" content="Microblog register page" />
+    <meta name="author" content="Register" />
+    <meta name="robots" content="index, follow" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
+    <title>Microblogger</title>
+  </head>
+  <body>
+    <!-- masthead code -->
+    <div id="masthead" class="masthead-container">
+      <div id="start">
+        <div id="tag">
+          <h3>Microblogger:</h3>
+        </div>
+        <div id="page type">
+          <p>Register</p>
+        </div>
+      </div>
+      <div id="end">
+        <a href="/reader/home">back</a>
+      </div>
+    </div>
+    <!-- End of masthead code -->
+
+    <div id="userblock">
+      <h1>Register Me!</h1>
+      <form action="/register" method="post" class="user-form">
+        <section>
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" required autofocus />
+        </section>
+        <section>
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required />
+        </section>
+        <button class="user-submit" type="submit">Register</button>
+      </form>
+      <div id="user-redirect">
+        <p>I already have an account,</p>
+        <a href="/login">Login now!</a>
+      </div>
+    </div>
+  </body>
+</html>

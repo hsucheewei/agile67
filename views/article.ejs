@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="Reader Homepage" content="Reader homepage for microbloggers" />
+    <meta name="author" content="Reader" />
+    <meta name="robots" content="index, follow" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
+    <title>Microblogger</title>
+  </head>
+  <body>
+    <!-- masthead code -->
+    <div id="masthead" class="masthead-container">
+      <div id="start">
+        <div id="tag">
+          <h3>Microblogger:</h3>
+        </div>
+        <div id="page type">
+          <p>Reader Homepage</p>
+        </div>
+      </div>
+      <div id="end">
+        <a href="/reader/home">back</a>
+      </div>
+    </div>
+    <!-- End of masthead code -->
+
+    <!-- banner code -->
+    <div id="banner" class="banner-container">
+      <div id="bannerHeader">
+        <p><%= bannerSettingsData.banner_header %></p>
+      </div>
+      <div id="bannerSubheader">
+        <p><%= bannerSettingsData.banner_subheader %></p>
+      </div>
+      <div id="authorName">
+        <p><%= bannerSettingsData.author_name %></p>
+      </div>
+    </div>
+    <!-- End of banner code -->
+
+    <div id="page-manager">
+
+        <!-- article content -->
+        <article id="articleContent">
+        <p class="article-title"><%=articleData.title%></p>
+        <p class="article-subtitle"><%=articleData.subtitle%></p>
+        <p class="article-body"><%=articleData.body%></p>
+        </article>
+        <!-- End of article content -->
+
+
+        <!-- Like button -->
+        <form action="/reader/article/likes/<%= articleData.id %>" method="post">
+            <button type="submit" name="likeButton">
+            Like '<%=articleData.likes%>'
+            </button>
+        </form>
+        <!-- End of like button -->
+
+        <!-- interactionBlock -->
+        <div id="interactionBlock">
+
+        <!-- Comment Form -->
+        <h3>Leave a Comment:</h3>
+        <form
+            action="/reader/article/comment/<%= articleData.id %>"
+            method="post"
+            id="commentForm"
+        >
+            <textarea
+            name="commentForm"
+            placeholder="Leave a comment here."
+            required
+            ></textarea>
+            <button type="submit">Add Comment</button>
+        </form>
+        <!--End of comment form -->
+
+        </div>
+        <!-- End of interactionBlock -->
+
+        <!-- comment section -->
+        <div id="commentsSection">
+        <h2>Comments: </h2>
+        <% if (commentsData && commentsData.length > 0) { %>
+        <ul class="comment-list">
+            <% commentsData.forEach(comment => { %>
+            <li>
+            <p class="comment-body"><%= comment.commentBody %></p>
+            <p class="comment-date"><b>Posted: </b><%= comment.commentDate %></p>
+            </li>
+            <% }) %>
+        </ul>
+        <% } else { %>
+        <p>No comments found.</p>
+        <% } %>
+        </div>
+        <!-- End of comment section -->
+    </div>
+  </body>
+</html>
