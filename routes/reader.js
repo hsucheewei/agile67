@@ -4,31 +4,7 @@ const assert = require("assert");
 
 //reader homepage
 router.get("/home", (req, res) => {
-  // Retrieve the current banner settings from the database
-  global.db.get(
-    "SELECT * FROM bannerSettings WHERE id = 1",
-    function (err, bannerSettingsData) {
-      if (err) {
-        console.error(err);
-      }
-      // Retrieve the published articles from the database
-      global.db.all(
-        "SELECT * FROM publishedArticles",
-        function (err, publishedArticles) {
-          if (err) {
-            console.error(err);
-            next(err);
-          } else {
-            // Render the reader-home.ejs template and pass the bannerSettingsData and publishedArticles to it
-            res.render("reader-home", {
-              bannerSettingsData,
-              publishedArticles,
-            });
-          }
-        }
-      );
-    }
-  );
+  res.render("reader-home", {img:'/assets/images/sam-moghadam-khamseh-yxZSAjyToP4-unsplash.jpg'});
 });
 
 // Get request for article page template

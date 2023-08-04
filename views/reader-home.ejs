@@ -28,52 +28,11 @@
 </head>
 <body>
   <%- include('navigation.ejs') %>
-    <!-- masthead code -->
-    <div id="masthead" class="masthead-container">
-        <div id="start">
-          <div id="tag">
-            <h3>Microblogger:</h3>
-          </div>
-          <div id="page type">
-            <p>Reader Homepage</p>
-          </div>
-        </div>
-        <div id="end">
-          <a href="/register">Register </a><p> / </p><a href="/login"> Login</a>
-        </div>
-      </div>
-      <!-- End of masthead code -->
-  
-      <!-- banner code -->
-      <div id="banner" class="banner-container">
-          <div id="bannerHeader">     
-              <p><%= bannerSettingsData.banner_header %></p>
-          </div>
-          <div id="bannerSubheader">
-              <p><%= bannerSettingsData.banner_subheader %></p>
-          </div>
-          <div id="authorName">
-              <p><%= bannerSettingsData.author_name %></p>
-          </div>
-      </div>
-      <!-- End of banner code -->
-
-      <!-- published articles sections -->
-      <div id="articleSection">
-        <h2>Articles:</h2>
-        <% if (publishedArticles && publishedArticles.length > 0) { %>
-            <% publishedArticles.forEach(article => { %>
-              <a href="/reader/article?id=<%= article.id %>" class="article-container">
-                <h3><%= article.title %></h3>
-                <h4><%= article.subtitle %></h4>
-                <p><%= article.published %></p>
-              </a>
-            <% }) %>
-          <% } else { %>
-            <p>No published articles found.</p>
-          <% } %>
-      </div>
-      <!-- end of published articles sections -->
-      <%- include('footer.ejs') %>
+  <div class="container-lg">
+    <%- include('partials/home-card', img); %>
+    <%- include('partials/home-card', img); %>
+    <%- include('partials/home-card', img); %>
+  </div>
+  <%- include('footer.ejs') %>
 </body>
 </html>
