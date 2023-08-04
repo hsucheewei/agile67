@@ -2,6 +2,11 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=node
 
 ### Node ###
+#json logs
+database.db
+package-lock.json
+package.json
+sessions
 # Logs
 logs
 *.log
