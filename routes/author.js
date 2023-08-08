@@ -252,14 +252,13 @@ router.post("/publishedArticle/delete/:id", (req, res) => {
   );
 });
 
-
 // Logout button to redirect back to reader homepage
-router.get('/logout', function (req, res) {
+router.get("/logout", function (req, res) {
   req.logout(function (err) {
     if (err) {
       console.error(err);
     }
-    res.redirect('/reader/home');
+    res.redirect("/reader/home");
   });
 });
 
