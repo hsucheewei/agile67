@@ -1,4 +1,107 @@
+/* page css */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.page-content{
+    margin-left: 250px;
+    margin-top: 65px;
+    position: relative;
+    background-color: rgb(127, 255, 150);
+    
+}
+
+.page-no-sidebar{
+    margin-left: 0;
+    position: relative;
+}
+
+/* navigation css */
+.navigation-bar{
+    padding: 5px 0px;
+    position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color:white; 
+  z-index: 1000;
+}
+
+/* burger menu placement */
+.burger-menu button{
+    color: black;
+  background-color: transparent;
+  padding-top: 0;
+  padding-left:3px;
+  padding-right:3px;
+  padding-bottom: 4px;
+  margin-bottom: 3px;
+}
+
+/* button placement */
+.nav-item button {
+    color: black;
+    padding-top: 0;
+    padding-left:6px;
+    padding-right:6px;
+    padding-bottom: 6px;
+    background-color: transparent;
+    margin-left: 10px;
+  }
+
+/* hover styles */
+.burger-menu button:hover,
+.nav-item button:hover,
+.input-group-append button:hover {
+  color: rgb(0, 0, 0);
+  background-color: rgb(237, 237, 237);
+  
+}
+
+/* sidebar css */
+.sidebar{
+    width: 250px;
+    position: fixed;
+    height: 100%;
+    left: 0;
+    top: 50px;/*length of the sidebar*/
+    background-color: var(--background-color);
+    overflow-y: auto;
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+.sidebar li.nav-item{
+   margin: 0 10px;
+    
+}
+
+.sidebar li.nav-item:hover{
+    background-color: rgb(237, 237, 237);
+    border-radius: 10px;
+}
+
+.nav-link span{
+    padding: 0 15px;
+        vertical-align: bottom;
+        white-space: nowrap;
+        font-size: 15px;
+}
+
+.nav-link i{
+    margin-bottom: 10px;
+}
+
+.minimised-sidebar{
+    width:0;
+}
+
+
+
+/* footer css */
 .footer {
-    background-color: #9BABBB;
-    color: white;
+  background-color: #9babbb;
+  color: white;
 }

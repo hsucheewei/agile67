@@ -27,8 +27,14 @@ global.db = new sqlite3.Database('./database.db',function(err){
 //express-parser middleware command to parse incoming form data
 app.use(express.urlencoded({ extended: true }));
 
+// Serve static assets
+app.use(express.static(path.join(__dirname, 'assets')));
+
 //static command to allow the linking of CSS
 app.use(express.static(path.join(__dirname,'public')));
+
+//static command to allow other seperate scripts
+app.use(express.static('public'));
 
 // Set up session middleware
 app.use(
