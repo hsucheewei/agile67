@@ -86,7 +86,7 @@ app.use(passport.session());
 
 //separate routes for the website based on user
 const readerRoutes = require('./routes/reader');
-const authorRoutes = require('./routes/author');
+const landingRoutes = require('./routes/landing');
 const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
 
@@ -108,9 +108,11 @@ app.get('/', (req, res) => {
 
 //this adds routes for readers
 app.use('/reader', readerRoutes);
+// Only authenticated users can access reader routes
+// app.use('/reader', isAuthenticated, readerRoutes);
 
-// Only authenticated users can access author routes
-app.use('/author', isAuthenticated, authorRoutes);
+// unauthenticated users access landing routes
+app.use('/landing', landingRoutes);
 
 // this adds routes for user registration
 app.use('/register', registerRoute);

@@ -98,7 +98,13 @@
     width:0;
 }
 
-
+/* landing home */
+#landing-hero-text {
+  background-image: url('/images/vegetables-set-left-black-slate.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
 
 /* footer css */
 .footer {
