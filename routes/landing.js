@@ -8,6 +8,11 @@ router.get("/", (req, res) => {
 });
 
 // Login button to render login page
+router.get("/about-us", function (req, res) {
+  res.render("landing-about-us");
+});
+
+// Login button to render login page
 router.get("/login", function (req, res) {
   res.render("login");
 });
