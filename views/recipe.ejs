@@ -31,6 +31,7 @@
   </head>
   <body>
     <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
+
     <div class="page-content page-no-sidebar m-4">
       <article>
         <div class="row">
@@ -48,7 +49,7 @@
           </div>
           <div class="col-md-8">
             <h2>Description</h2>
-            <p class="pr-4">
+            <p class="lead">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero a
               odit recusandae quod mollitia eos quia beatae autem, eveniet
               deleniti aliquid dolorum libero iusto magni! Dolorem magni ea
@@ -57,30 +58,34 @@
           </div>
         </div>
 
-        <div class="mb-4">
-          <h2>Ingredients</h2>
-          <ul>
-            <li>2 boneless, skinless chicken breasts</li>
-            <li>8 oz fettuccine pasta</li>
-            <li>2 cups heavy cream</li>
-            <li>1 cup grated Parmesan cheese</li>
-            <li>2 cloves garlic, minced</li>
-            <li>Salt and pepper to taste</li>
-            <!-- Add more ingredients as needed -->
-          </ul>
-        </div>
+        <div class="mb-4 mt-4">
+          <div class="row">
+            <!-- Ingredients Column -->
+            <div class="col-md-6">
+              <h3>Ingredients</h3>
+              <ul class="list-group" id="ingredientsList"></ul>
+            </div>
 
-        <div class="mb-4">
-          <h2>Instructions</h2>
-          <ol>
-            <li>Season the chicken breasts with salt and pepper.</li>
-            <li>In a large skillet, heat olive oil over medium-high heat.</li>
-            <li>
-              Add the chicken breasts and cook until golden brown and cooked
-              through.
-            </li>
-            <li>Remove the chicken from the skillet and set aside.</li>
-          </ol>
+            <!-- Instructions Column -->
+            <div class="col-md-6">
+              <h3>Instructions</h3>
+              <ol class="list-group">
+                <li class="list-group-item">
+                  Season the chicken breasts with salt and pepper.
+                </li>
+                <li class="list-group-item">
+                  In a large skillet, heat olive oil over medium-high heat.
+                </li>
+                <li class="list-group-item">
+                  Add the chicken breasts and cook until golden brown and cooked
+                  through.
+                </li>
+                <li class="list-group-item">
+                  Remove the chicken from the skillet and set aside.
+                </li>
+              </ol>
+            </div>
+          </div>
         </div>
       </article>
 
@@ -95,7 +100,11 @@
         <form>
           <div class="mb-3">
             <label for="comment">Add a comment:</label>
-            <textarea class="form-control" id="comment" rows="3"></textarea>
+            <textarea
+              class="form-control h-100"
+              id="comment"
+              rows="3"
+            ></textarea>
           </div>
           <div class="d-flex justify-content-between">
             <div></div>
@@ -107,6 +116,49 @@
     </div>
 
     <!-- page scripts -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let ingredientsList = document.getElementById("ingredientsList");
+
+        let ingredients = [
+          "2 boneless, skinless chicken breasts",
+          "8 oz fettuccine pasta",
+          "2 cups heavy cream",
+          "1 cup grated Parmesan cheese",
+          "2 cloves garlic, minced",
+          "Salt and pepper to taste",
+        ];
+
+        ingredients.forEach(function (ingredient) {
+          let listItem = document.createElement("li");
+          listItem.className = "list-group-item d-flex align-items-center";
+
+          let checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.className = "form-check-input ingredient-checkbox me-2";
+
+          listItem.appendChild(checkbox);
+          listItem.appendChild(document.createTextNode(ingredient));
+          ingredientsList.appendChild(listItem);
+
+          checkbox.addEventListener("change", function () {
+            if (checkbox.checked) {
+              listItem.classList.add(
+                "text-decoration-line-through",
+                "text-muted"
+              );
+            } else {
+              listItem.classList.remove(
+                "text-decoration-line-through",
+                "text-muted"
+              );
+            }
+          });
+        });
+      });
+    </script>
+
     <script src="/scripts/sidebar.js"></script>
   </body>
 </html>

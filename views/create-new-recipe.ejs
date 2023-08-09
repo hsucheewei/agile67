@@ -32,11 +32,194 @@
   <body>
     <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
     <div class="page-content page-no-sidebar">
-      
-        
+      <div class="container my-4">
+        <h1 class="text-center">Upload Your Recipe</h1>
+        <form class="mt-4">
+          <div class="mb-3">
+            <label for="recipeTitle" class="form-label">Recipe Title</label>
+            <input type="text" class="form-control" id="recipeTitle" required />
+          </div>
+
+          <div class="mb-5 mt-5">
+            <label class="form-label">Ingredients</label>
+            <ul id="ingredientsList" class="list-group">
+              <!-- Ingredient Input Template -->
+              <li class="list-group-item">
+                <div class="input-group">
+                  <select class="form-select ingredient-select" required>
+                    <option value="" disabled selected>
+                      Select an ingredient
+                    </option>
+                    <option value="ingredient1">Ingredient 1</option>
+                    <option value="ingredient2">Ingredient 2</option>
+                    <!-- Add more ingredients as needed -->
+                  </select>
+                  <input
+                    type="text"
+                    class="form-control measurement-input"
+                    placeholder="Measurement"
+                    required
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-remove-ingredient"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </li>
+            </ul>
+            <button
+              type="button"
+              class="btn btn-primary btn-add-ingredient mt-2 float-end"
+            >
+              Add Ingredient
+            </button>
+          </div>
+
+          <div class="mb-3 mt-5">
+            <label for="instructions" class="form-label">Instructions</label>
+            <ul id="instructionsList" class="list-group">
+              <!-- Instruction Input Template -->
+              <li class="list-group-item">
+                <div class="input-group">
+                  <textarea
+                    class="form-control instruction-input h-100"
+                    rows="2"
+                    placeholder="Enter instruction"
+                    required
+                  ></textarea>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-remove-instruction"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </li>
+            </ul>
+            <button
+              type="button"
+              class="btn btn-primary btn-add-instruction mt-2 float-end"
+            >
+              Add Instruction
+            </button>
+          </div>
+
+          <div class="mb-3 mt-5">
+            <label for="image" class="form-label">Recipe Image</label>
+            <input
+              type="file"
+              class="form-control"
+              id="image"
+              accept="image/*"
+              required
+            />
+            <div id="image-preview" class="mt-2"></div>
+          </div>
+          <div class="mb-3 text-center">
+            <button type="submit" class="btn btn-primary">Upload Recipe</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- page scripts -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const ingredientsList = document.getElementById("ingredientsList");
+        const addIngredientBtn = document.querySelector(".btn-add-ingredient");
+
+        addIngredientBtn.addEventListener("click", function () {
+          const newIngredientItem = document.createElement("li");
+          newIngredientItem.className = "list-group-item ingredient-item";
+
+          const inputGroup = document.createElement("div");
+          inputGroup.className = "input-group";
+
+          const measurementInput = document.createElement("input");
+          measurementInput.type = "text";
+          measurementInput.className = "form-control measurement-input";
+          measurementInput.placeholder = "Measurement";
+          measurementInput.required = true;
+
+          const ingredientInput = document.createElement("input");
+          ingredientInput.type = "text";
+          ingredientInput.className = "form-control ingredient-input";
+          ingredientInput.placeholder = "Ingredient";
+          ingredientInput.required = true;
+
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.className = "btn btn-secondary btn-remove-ingredient";
+          removeButton.innerText = "Remove";
+          removeButton.addEventListener("click", function () {
+            newIngredientItem.remove();
+          });
+
+          inputGroup.appendChild(measurementInput);
+          inputGroup.appendChild(ingredientInput);
+          inputGroup.appendChild(removeButton);
+          newIngredientItem.appendChild(inputGroup);
+          ingredientsList.insertBefore(
+            newIngredientItem,
+            ingredientsList.firstChild
+          );
+        });
+
+        const instructionsList = document.getElementById("instructionsList");
+        const addInstructionBtn = document.querySelector(
+          ".btn-add-instruction"
+        );
+
+        addInstructionBtn.addEventListener("click", function () {
+          const newInstructionItem = document.createElement("li");
+          newInstructionItem.className = "list-group-item instruction-item";
+
+          const inputGroup = document.createElement("div");
+          inputGroup.className = "input-group";
+
+          const instructionInput = document.createElement("textarea");
+          instructionInput.className = "form-control instruction-input";
+          instructionInput.rows = "2";
+          instructionInput.placeholder = "Enter instruction";
+          instructionInput.required = true;
+
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.className = "btn btn-secondary btn-remove-instruction";
+          removeButton.innerText = "Remove";
+          removeButton.addEventListener("click", function () {
+            newInstructionItem.remove();
+          });
+
+          inputGroup.appendChild(instructionInput);
+          inputGroup.appendChild(removeButton);
+          newInstructionItem.appendChild(inputGroup);
+          instructionsList.insertBefore(
+            newInstructionItem,
+            instructionsList.firstChild
+          );
+        });
+
+        const imageInput = document.getElementById("image");
+        const imagePreview = document.getElementById("image-preview");
+
+        imageInput.addEventListener("change", function () {
+          imagePreview.innerHTML = ""; // Clear previous preview
+
+          const file = imageInput.files[0];
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(file);
+          img.className = "img-thumbnail mx-auto d-block border-0";
+          img.style.maxWidth = "200px";
+          img.style.maxHeight = "200px";
+          imagePreview.appendChild(img);
+        });
+      });
+    </script>
+
     <script src="/scripts/sidebar.js"></script>
   </body>
 </html>
