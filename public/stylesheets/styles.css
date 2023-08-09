@@ -162,8 +162,8 @@ button.bg-primary:focus {
 
 .btn-primary:hover {
   color: #fff;
-  background-color: #52725d;
-  border-color: #4b6955;
+  background-color: #52725d !important;
+  border-color: #4b6955 !important;
 }
 
 .btn-primary:focus,
