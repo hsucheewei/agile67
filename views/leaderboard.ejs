@@ -41,23 +41,32 @@
   <body>
     <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
     <div class="page-content page-no-sidebar">
-        <div class= "mx-auto"  style="width: 400px;">
+        <div class= "mx-auto"  style="width: 450px;">
             <h1 class="text-center">Leaderboard: Overall</h1>
             <h6 class="text-center">Ranked by number of likes</h6>
 
             <h4 class="text-center">Viewing Leaderboard for: </h4>
-            <div class= "dropdown text-center">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Types of categories
+            <div class= "btn text-center">
+                <button class="btn btn-primary" type="button" id="groupButtons">
+                    Chicken
                 </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="unknown">Chicken</a>
-                    <a class="dropdown-item" href="unknown">Beef</a>
-                    <a class="dropdown-item" href="unknown">Pork</a>
-                    <a class="dropdown-item" href="unknown">Seafood</a>
-                    <a class="dropdown-item" href="unknown">Vegetarian</a>
-                    <a class="dropdown-item" href="unknown">Dessert</a>
-                  </div>
+                <button class="btn btn-primary" type="button" id="groupButtons">
+                    Beef
+                </button>
+                <button class="btn btn-primary" type="button" id="groupButtons">
+                    Pork
+                </button>
+                <button class="btn btn-primary" type="button" id="groupButtons">
+                    Seafood
+                </button>
+                <button class="btn btn-primary" type="button" id="groupButtons">
+                    Vegetarian
+                </button>
+                <p></p>
+                <button class="btn btn-primary" type="button" id="groupButtons">
+                    Dessert
+                </button>
+                 
                 
             </div>
 
