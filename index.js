@@ -89,6 +89,7 @@ const readerRoutes = require('./routes/reader');
 const landingRoutes = require('./routes/landing');
 const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
+const leaderBoardRoute = require('./routes/leaderboard');
 
 // Authentication middleware to check if the user is authenticated
 function isAuthenticated(req, res, next) {
@@ -119,6 +120,8 @@ app.use('/register', registerRoute);
 
 // Add the login route to the app
 app.use('/login', loginRoute);
+
+app.use('/leaderboard', leaderBoardRoute);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
