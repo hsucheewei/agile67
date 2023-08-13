@@ -8,7 +8,7 @@ router.get("/leaderboard", (req, res) => {
     res.render("likes-content", { likeCount });
 });
 
-router.post("/leaderboard", (req, res) => {
+router.post("/likes-content", (req, res) => {
     likeCount++;
     res.json({ likeCount });
 });
