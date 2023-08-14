@@ -8,21 +8,38 @@ const sqlite3 = require('sqlite3').verbose();
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+//mongodb connect
+const { getDb, connectToDb } = require('./db');
 
 // Generate a secret key for session
 const crypto = require('crypto');
 const secretKey = crypto.randomBytes(32).toString('hex');
 
-//items in the global namespace are accessible throught out the node application
-global.db = new sqlite3.Database('./database.db',function(err){
-  if(err){
-    console.error(err);
-    process.exit(1); //Bail out we can't connect to the DB
-  }else{
-    console.log("Database connected");
-    global.db.run("PRAGMA foreign_keys=ON"); //This tells SQLite to pay attention to foreign key constraints
+// //items in the global namespace are accessible throught out the node application
+// global.db = new sqlite3.Database('./database.db',function(err){
+//   if(err){
+//     console.error(err);
+//     process.exit(1); //Bail out we can't connect to the DB
+//   }else{
+//     console.log("Database connected");
+//     global.db.run("PRAGMA foreign_keys=ON"); //This tells SQLite to pay attention to foreign key constraints
+//   }
+// });
+
+
+// db connection
+let db
+
+connectToDb((err) => {
+  if(!err){
+    app.listen(port, () => {
+      console.log('app listening on port 3000');
+    })
+    db = getDb();
+    console.log('mongoDB database connected')
   }
-});
+})
+
 
 //express-parser middleware command to parse incoming form data
 app.use(express.urlencoded({ extended: true }));
@@ -126,6 +143,4 @@ app.use('/leaderboard', leaderBoardRoute);
 
 app.use('/settings', settingsRoute);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+
