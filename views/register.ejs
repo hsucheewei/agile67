@@ -1,46 +1,122 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="Register" content="Microblog register page" />
-    <meta name="author" content="Register" />
+    <meta name="Food Haven Register" content="Food Haven Register" />
+    <meta name="author" content="Agile Group 67" />
     <meta name="robots" content="index, follow" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
-    <title>Microblogger</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <title>Food Haven</title>
   </head>
   <body>
-    <!-- masthead code -->
-    <div id="masthead" class="masthead-container">
-      <div id="start">
-        <div id="tag">
-          <h3>Microblogger:</h3>
-        </div>
-        <div id="page type">
-          <p>Register</p>
-        </div>
-      </div>
-      <div id="end">
-        <a href="/reader/home">back</a>
-      </div>
+    <div class=" d-flex justify-content-end mt-2">
+      <a href="landing" style="text-decoration: none; margin-right: 2%;">
+        <p>Back</p>
+      </a>
     </div>
-    <!-- End of masthead code -->
-
-    <div id="userblock">
-      <h1>Register Me!</h1>
-      <form action="/register" method="post" class="user-form">
-        <section>
-          <label for="username">Username</label>
-          <input id="username" name="username" type="text" required autofocus />
-        </section>
-        <section>
-          <label for="password">Password</label>
-          <input id="password" name="password" type="password" required />
-        </section>
-        <button class="user-submit" type="submit">Register</button>
-      </form>
-      <div id="user-redirect">
-        <p>I already have an account,</p>
-        <a href="/login">Login now!</a>
+    <div class="container d-flex justify-content-center">
+      <div class="col-md-8 col-lg-4" style="margin-top: -4%; ">
+        <form>
+          <img
+            src="/images/FoodHavenLogo.png"
+            class="img-fluid"
+            alt="Sample image"
+            style="width: 70%; margin: 0 15%;"
+          />
+          <!-- Name input -->
+          <div class="form-outline mb-4 d-flex justify-content-end" style="margin-top: -4%; z-index: 2;">
+            <div class="d-flex flex-column align-items-start">
+              <label class="form-label fw-bold" for="firstname">First Name: </label>
+              <input
+                type="text"
+                id="firstnameForm"
+                class="form-control form-control-lg"
+                placeholder="Enter first name"
+              />
+            </div>
+            <div class="d-flex flex-column align-items-start" style="margin-left: 10px;">
+              <label class="form-label fw-bold" for="lastname">Last Name: </label>
+              <input
+                type="text"
+                id="lastnameForm"
+                class="form-control form-control-lg"
+                placeholder="Enter last name"
+              />
+            </div>
+          </div>
+          
+          <!-- Email input -->
+          <div class="form-outline mb-4">
+            <label class="form-label fw-bold" for="email">Email address: </label>
+            <input
+              type="email"
+              id="emailForm"
+              class="form-control form-control-lg"
+              placeholder="Enter a valid email address"
+            />
+          </div>
+        
+          <!-- Password input -->
+          <div class="form-outline mb-3">
+            <label class="form-label fw-bold" for="password">Password: </label>
+            <input
+              type="password"
+              id="passwordForm"
+              class="form-control form-control-lg"
+              placeholder="Enter password"
+            />
+          </div>
+        
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Checkbox -->
+            <div class="form-check mb-0">
+              <input
+                class="form-check-input me-2 rememberCheckbox"
+                type="checkbox"
+                value=""
+                id="form2Example3"
+              />
+              <label class="form-check-label" for="rememberCheckbox">
+                Remember me
+              </label>
+            </div>
+            <a href="#!" class="text-body">Forgot password?</a>
+          </div>
+          
+          <div class="text-center text-lg-start mt-2 pt-2 register-button" style="display: flex; flex-direction: column; align-items: center;">
+            <button
+              type="button"
+              class="btn btn-primary btn-lg"
+              style="width: 40%;"
+            >
+              Register
+            </button>
+            <p class="small fw-bold mt-2 pt-1 mb-0">
+              Already have an account? <a href="login" class="link-danger">Login here!</a>
+            </p>
+          </div>
+        </form>
       </div>
     </div>
   </body>
