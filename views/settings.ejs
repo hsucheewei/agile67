@@ -1,42 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="Food Haven recipe" content="Food Haven recipe" />
-    <meta name="author" content="Agile Group 67" />
-    <meta name="robots" content="index, follow" />
-    <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
-    />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-      crossorigin="anonymous"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    />
 
-    <title>Food Haven</title>
-  </head>
-  <body>
-    <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
-    <div class="page-content page-no-sidebar">
-      
-        
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="Food Haven recipe" content="Food Haven recipe" />
+  <meta name="author" content="Agile Group 67" />
+  <meta name="robots" content="index, follow" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
-    <!-- page scripts -->
-    <script src="/scripts/sidebar.js"></script>
-  </body>
+  <title>Account Settings</title>
+</head>
+
+<body>
+  <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
+      <div class="page-content page-no-sidebar">
+        <div class="container mt-5">
+          <div class="row justify-content-start">
+            <div class="col-md-6">
+              <h2 class="mb-4">Account Settings</h2>
+              <div class="text-start">
+                <i class="bi bi-person-circle" style="font-size: 5rem;"></i>
+              </div>
+              <div class="text-start mt-2">
+                <button class="btn btn-primary">Change Profile Picture</button>
+              </div>
+              <form class="mt-4">
+                <div class="mb-3">
+                  <label for="displayName" class="form-label">Display Name</label>
+                  <input type="text" class="form-control" id="displayName" placeholder="Enter your display name">
+                </div>
+                <div class="mb-3">
+                  <label for="bio" class="form-label">Bio</label>
+                  <textarea class="form-control" id="bio" rows="4" placeholder="Enter your bio"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+              </form>
+              <div class="mt-4 text-start">
+                <a href="#" class="btn btn-danger">Log Out</a>
+                <button class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete
+                  Account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delete Account Modal -->
+        <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteAccountModalLabel">Delete Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete your account? This action cannot be undone.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger">Delete Account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- page scripts -->
+      <script src="/scripts/sidebar.js"></script>
+</body>
+
 </html>
