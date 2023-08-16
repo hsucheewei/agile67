@@ -82,7 +82,7 @@ const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
 const leaderBoardRoute = require('./routes/leaderboard');
 const settingsRoute= require('./routes/settings');
-const aboutRoute = require('./routes/about')
+const aboutRoute = require('./routes/about');
 
 // Authentication middleware to check if the user is authenticated
 function isAuthenticated(req, res, next) {
@@ -95,11 +95,6 @@ function isAuthenticated(req, res, next) {
 //set the app to use ejs for rendering
 app.set('view engine', 'ejs');
 
-//root of the website
-app.get('/', (req, res) => {
-  res.redirect('reader/home');
-});
-
 app.get('/images/:imageName', (req, res) => {
   const imageName = req.params.imageName;
   const imagePath = path.join(__dirname, 'datasets', 'recipeImages', imageName);
@@ -107,7 +102,7 @@ app.get('/images/:imageName', (req, res) => {
 });
 
 //this adds routes for readers
-app.use('/reader', readerRoutes);
+app.use('/', readerRoutes);
 // Only authenticated users can access reader routes
 // app.use('/reader', isAuthenticated, readerRoutes);
 

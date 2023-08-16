@@ -3,7 +3,7 @@ const router = express.Router();
 const assert = require("assert");
 
 //reader homepage
-router.get("/home", (req, res) => {
+router.get("/", (req, res) => {
   res.render("reader-home", {
     img: "/images/sam-moghadam-khamseh-yxZSAjyToP4-unsplash.jpg",
   });
