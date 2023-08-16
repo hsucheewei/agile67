@@ -81,7 +81,7 @@ const landingRoutes = require('./routes/landing');
 const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
 const leaderBoardRoute = require('./routes/leaderboard');
-const settingsRoute = require('./routes/settings');
+const settingsRoute= require('./routes/settings');
 
 // Authentication middleware to check if the user is authenticated
 function isAuthenticated(req, res, next) {
@@ -122,6 +122,8 @@ app.use('/login', loginRoute);
 app.use('/leaderboard', leaderBoardRoute);
 
 app.use('/settings', settingsRoute);
+
+app.use('/about', aboutRoute)
 
 // Read data from the CSV file and insert into the database
 fs.createReadStream('datasets/recipes.csv')
