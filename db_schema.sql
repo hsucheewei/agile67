@@ -81,3 +81,12 @@ CREATE TABLE recipes (
   Image_Name TEXT,
   Cleaned_Ingredients TEXT
 );
+
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL,
+);
