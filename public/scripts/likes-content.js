@@ -1,4 +1,4 @@
-const likeButton = document.getElementById("likeButton");
+/* const likeButton = document.getElementById("likeButton");
 const likeCountElement = document.getElementById("likeCount");
 
 
@@ -7,3 +7,5 @@ likeButton.addEventListener("click", async () => {
     const data = await response.json();
     likeCountElement.textContent = data.likeCount;
 });
+
+*/

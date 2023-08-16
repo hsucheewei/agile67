@@ -1,15 +1,25 @@
 <article class="mb-4">
     <div class="row g-0">
         <div class="likes col p-4 d-flex flex-column">
-            <script src="/scripts/likes-content.js">
-            </script>
             
-            <button  class="btn btn-primary" id="likeButton">Like</button> 
-           
+            <button  class="btn btn-primary" id="likeButton">Like 
+                <span id="likeCount">
+                </span>
+            </button> 
 
+            
         </div> 
     </div>
+    <script>
+        const likeButton = document.getElementById("likeButton");
+        const likeCountElement = document.getElementById("likeCount");
+         let likeCount = 0;
 
+        likeButton.addEventListener("click", () => {
+            likeCount++;
+            likeCountElement.textContent = likeCount;
+    });
+    </script>
 
 
 </article>
