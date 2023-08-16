@@ -87,6 +87,5 @@ CREATE TABLE users (
     firstName TEXT NOT NULL,
     lastName TEXT NOT NULL,
     username TEXT NOT NULL,
-    email TEXT NOT NULL,
     password TEXT NOT NULL
 );

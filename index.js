@@ -4,12 +4,13 @@ const session = require('express-session');
 const port = 3000;
 const path = require('path');
 const SQLiteStore = require('connect-sqlite3')(session);
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt');
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const csv = require('csv-parser');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
+
 
 // Create a SQLite database connection
 const db = new sqlite3.Database('./database.db', function (err) {
@@ -30,6 +31,10 @@ app.use(express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 
+
+// Import the authentication module
+const auth = require('./auth');
+
 // Set up session middleware
 app.use(
   session({
@@ -39,38 +44,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-
-// Passport.js authentication strategy
-passport.use(
-  new LocalStrategy(function (username, password, done) {
-    db.get('SELECT * FROM users WHERE username = ?', [username], function (err, user) {
-      if (err) {
-        return done(err);
-      }
-      if (!user) {
-        return done(null, false, { message: 'Invalid username or password.' });
-      }
-      bcrypt.compare(password, user.password, function (err, result) {
-        if (err || !result) {
-          return done(null, false, { message: 'Invalid username or password.' });
-        }
-        return done(null, user);
-      });
-    });
-  })
-);
-
-
-// Passport serialize and deserialize user functions
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  db.get('SELECT * FROM users WHERE id = ?', [id], function (err, user) {
-    done(err, user);
-  });
-});
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -133,6 +106,7 @@ db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", 
 
       if (rowCountResult.count > 0) {
         console.log('The "recipes" table already exists and has rows. Skipping data insertion.');
+        console.log('The application is ready for launch.');
       } else {
         console.log("please wait as we are downloading the data into the database...")
         // Read data from the CSV file and insert into the database
@@ -151,6 +125,7 @@ db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", 
           })
           .on('end', () => {
             console.log('Data inserted from CSV into the database');
+            console.log('The application is ready for launch.');
           });
       }
     });
