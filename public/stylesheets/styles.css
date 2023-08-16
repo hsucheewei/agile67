@@ -8,6 +8,7 @@
 .page-content {
   margin-top: 65px;
   background-color: white;
+  max-width: 100%;
 }
 
 .page-no-sidebar {
@@ -38,7 +39,7 @@
 }
 
 /* button placement */
-.nav-item button {
+.nav-item a {
   color: black;
   padding-top: 0;
   padding-left: 6px;
@@ -48,14 +49,13 @@
   margin-left: 10px;
 }
 
+.nav-item btn {
+  color: #FFF;
+}
+
 /* hover styles */
-.burger-menu button:hover,
-.nav-item button:hover,
-.input-group-append button:hover,
-.sidebar-burger-menu button:hover {
+.input-group-append button:hover{
   color: rgb(0, 0, 0);
-  /* background-color: rgb(237, 237, 237);
-   */
   background-color: rgb(177, 192, 157);
 }
 
@@ -105,10 +105,6 @@
   font-size: 15px;
 }
 
-.nav-link i {
-  margin-bottom: 10px;
-}
-
 .minimised-sidebar {
   width: 0;
 }
@@ -143,8 +139,11 @@
   color: white;
 }
 
-/* card styling */
+.footer i {
+  font-size: 2rem;
+}
 
+/* card styling */
 a.bg-primary:hover,
 a.bg-primary:focus,
 button.bg-primary:hover,
@@ -154,6 +153,14 @@ button.bg-primary:focus {
 
 .border-primary {
   border-color: #61876e !important;
+}
+
+.navigation-bar.btn:hover {
+  color: #52725d !important;
+}
+
+.btn:hover {
+  color: #61876e !important;
 }
 
 .btn-primary {
@@ -171,4 +178,12 @@ button.bg-primary:focus {
 .btn-primary:focus,
 .btn-primary.focus {
   box-shadow: 0 0 0 0.2rem rgba(97, 135, 110, 0.5);
+}
+
+/* landing styling */
+
+#landing-hero-text {
+  background: url('../images/vegetables-set-left-black-slate.jpg');
+  background-size: cover;
+  color: white;
 }
