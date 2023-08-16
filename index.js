@@ -81,8 +81,8 @@ const landingRoutes = require('./routes/landing');
 const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
 const leaderBoardRoute = require('./routes/leaderboard');
-const settingsRoute= require('./routes/settings');
-const aboutRoute = require('./routes/about');
+const settingsRoute = require('./routes/settings');
+const aboutRoute = require('./routes/about')
 
 // Authentication middleware to check if the user is authenticated
 function isAuthenticated(req, res, next) {
@@ -95,11 +95,6 @@ function isAuthenticated(req, res, next) {
 //set the app to use ejs for rendering
 app.set('view engine', 'ejs');
 
-app.get('/images/:imageName', (req, res) => {
-  const imageName = req.params.imageName;
-  const imagePath = path.join(__dirname, 'datasets', 'recipeImages', imageName);
-  res.sendFile(imagePath);
-});
 
 //this adds routes for readers
 app.use('/', readerRoutes);
@@ -161,6 +156,40 @@ db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", 
     });
   }
 });
+
+
+app.get('/images/:imageName', (req, res) => {
+  const imageName = req.params.imageName;
+  const imagePath = path.join(__dirname, 'datasets', 'recipeImages', imageName);
+  res.sendFile(imagePath);
+});
+
+app.get('/recipe/:id', (req, res) => {
+  const recipeId = req.params.id;
+  db.get('SELECT * FROM recipes WHERE id = ?', [recipeId], (err, recipe) => {
+    if (err || !recipe) {
+      console.error('Error fetching recipe:', err);
+      res.render('error');
+    } else {
+      console.log('Fetched recipe:', recipe);
+
+      // Manually split the Cleaned_Ingredients string and trim each ingredient
+      // Remove square brackets and split using single quotes as delimiters
+      const cleanedIngredientsArray = recipe.Cleaned_Ingredients
+        .slice(1, -1) // Remove square brackets
+        .split("', '")
+        .map((ingredient) => ingredient.trim()); // Trim any extra spaces
+
+      recipe.Cleaned_Ingredients = cleanedIngredientsArray;
+      // Split the instructions by newlines into an array
+      const instructionsArray = recipe.Instructions.split('\n');
+      recipe.Instructions = instructionsArray;
+      res.render('recipe', { recipe });
+    }
+  });
+});
+
+
 
 
 // Start the server
