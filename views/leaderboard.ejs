@@ -40,33 +40,32 @@
         <div class= "leaderboard-info mb-4 row g-0 border">
             <div class= "col-sm-2 pt-2">
                 <h3> Index </h3>
+                <div class="container-lg">
+                        <ul >
+                            <li> 1</li>
+                        </ul>
+                    </div>
+
              </div>
 
              <div class= "leaderboard-recipes col p-2 d-flex flex-column">
                 <h3> All Recipes </h3>
                 <div class="container-lg">
-                    <%- include('leaderboard-content.ejs', img); %> 
-                    <%- include('leaderboard-content.ejs', img); %> 
-                    <%- include('leaderboard-content.ejs', img); %> 
-                    <%- include('leaderboard-content.ejs', img); %> 
-                    <%- include('leaderboard-content.ejs', img); %> 
-    
-                </div>
+                    <% titleRecipe.forEach(function(recipe){ %>
+                    <div class="p-2"> <%- include('leaderboard-content.ejs') %> </div> 
+                    <% }) %>
+                </div> 
     
             
             </div>
             <div class= "likes col-lg-2 d-flex flex-column">
                 <h3> Likes </h3>
                 <div class="container-lg">
-                    <%- include('likes-content.ejs', "likeCount"); %>
+                    <%- include('likes-content.ejs'); %>
                 </div>
                 <button  class="btn btn-primary"> Comments </button> 
                 
             </div>
-
-
-
-
         </div>
         </div>
 
@@ -76,6 +75,7 @@
         <div class="black-overlay"></div>
             <!-- page scripts -->
     <script src="/scripts/sidebar.js"></script>
+
     
     
     </script>

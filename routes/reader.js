@@ -22,9 +22,8 @@ router.get("/profile", (req, res) => {
 
 //get request for leaderboard
 router.get("/leaderboard", (req, res) => {
-  res.render("leaderboard", {
-    img: "/images/sam-moghadam-khamseh-yxZSAjyToP4-unsplash.jpg",
+  res.render("leaderboard");
   });
-});
+
 
 module.exports = router;
