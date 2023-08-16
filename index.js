@@ -196,7 +196,6 @@ app.get('/', (req, res) => {
       console.error('Error fetching recipes:', err);
       res.render('error');
     } else {
-      console.log('Fetched recipes:', recipes);
       res.render("reader-home", {recipes: recipes});
     }
   });
