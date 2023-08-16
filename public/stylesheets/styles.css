@@ -6,9 +6,10 @@
 }
 
 .page-content {
-  margin-top: 65px;
+  margin-top: 85px;
   background-color: white;
   max-width: 100%;
+  margin-bottom: 20px;
 }
 
 .page-no-sidebar {
@@ -87,6 +88,9 @@
   padding-top: 0px;
   padding-bottom: 3px;
   margin-bottom: 3px;
+}
+.sidebar-burger-menu button:hover{
+  color: #61876e;
 }
 
 .sidebar li.nav-item {
