@@ -93,7 +93,7 @@
             <div class= "likes col-lg-2 d-flex flex-column">
                 <h3> Likes </h3>
                 <div class="container-lg">
-                    <%- include('likes-content.ejs'); %>
+                    <%- include('likes-content.ejs', "likeCount"); %>
                 </div>
                 <button  class="btn btn-primary"> Comments </button> 
                 
@@ -110,7 +110,7 @@
         </div>
             <!-- page scripts -->
     <script src="/scripts/sidebar.js"></script>
-    <script src="/scripts/likes-content.js"></script>
+    
     
     </script>
   </body>

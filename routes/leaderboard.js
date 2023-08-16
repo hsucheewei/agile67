@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const assert = require("assert");
 
-let likeCount = 0;
+const likeCount = 1;
 
 router.get("/leaderboard", (req, res) => {
     res.render("likes-content", { likeCount });
 });
 
-router.post("/likes-content", (req, res) => {
+router.post("/leaderboard", (req, res) => {
     likeCount++;
     res.json({ likeCount });
 });
