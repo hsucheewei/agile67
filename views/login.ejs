@@ -4,19 +4,22 @@
     <%- include('head.ejs') %>
   </head>
   <body>
-    <%- include('navigation-landing.ejs') %>
-    <div class="container d-flex justify-content-center text-center" style="padding-top:70px;">
-      <div class="col-md-8 col-lg-3 mb-4">
+    <div class=" d-flex justify-content-end mt-2">
+      <a href="landing" style="text-decoration: none; margin-right: 2%;">
+        <p>Back</p>
+      </a>
+    </div>
+    <div class="container d-flex justify-content-center">
+      <div class="col-md-8 col-lg-3" style="margin-top: -4%; ">
         <form>
           <img
             src="/images/FoodHavenLogo.png"
-            class="img-fluid mb-4"
+            class="img-fluid"
             alt="Sample image"
-            style="width: 50%;"
           />
           <!-- Email input -->
           <div class="form-outline mb-4">
-            <label class="form-label fw-bold text-left" for="email">Email address: </label>
+            <label class="form-label fw-bold" for="email">Email address: </label>
             <input
               type="email"
               id="emailForm"
@@ -27,7 +30,7 @@
         
           <!-- Password input -->
           <div class="form-outline mb-3">
-            <label class="form-label fw-bold text-left" for="password">Password: </label>
+            <label class="form-label fw-bold" for="password">Password: </label>
             <input
               type="password"
               id="passwordForm"
@@ -58,9 +61,9 @@
               class="btn btn-primary btn-lg"
               style="width: 40%;"
             >
-              Login
+              login
             </button>
-            <p class="small fw-bold mt-2 pt-1">
+            <p class="small fw-bold mt-2 pt-1 mb-0">
               Don't have an account? <a href="register" class="link-danger">Register here!</a>
             </p>
           </div>
