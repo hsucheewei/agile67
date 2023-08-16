@@ -1,23 +1,17 @@
   <article class="mb-4 rounded shadow" style="border:1px solid #61876E;">
   <div class="row g-0">
     <div class="col-md-4">
-      <img src="<%= img %>" class="img-fluid rounded" alt="Recipe Image" />
+      <img src="images/<%= recipe.Image_Name %>.jpg" class="w-100 h-100 rounded object-fit-cover" alt="Recipe Image" />
     </div>
     <div class="recipe-info col-md-8 p-4 d-flex flex-column">
-      <h2 class="recipe-title">Recipe title here</h2>
-      <p class="recipe-instructions">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-      </p>
+      <h2 class="recipe-title"><%= recipe.Title %></h2>
+      <div class="recipe-instructions">
+        <% recipe.Instructions.split("\n").forEach(function(p){ %>
+          <p class="mb-6 font-serif"><%= p %></p>
+        <% }) %>
+      </div>
       <div class="d-flex justify-content-end mt-auto">
-        <a href="recipe" role="button" class="d-inline-block btn btn-primary"
-          >More...</a
-        >
+        <a href="recipe/<%= recipe.id %>" role="button" class="d-inline-block btn btn-primary mt-3">More...</a>
       </div>
     </div>
   </div>

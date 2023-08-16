@@ -189,7 +189,18 @@ app.get('/recipe/:id', (req, res) => {
   });
 });
 
-
+//render home page
+app.get('/', (req, res) => {
+  db.all('SELECT id,Title,Instructions,Image_Name FROM recipes LIMIT 5;', (err, recipes) => {
+    if (err || !recipes) {
+      console.error('Error fetching recipes:', err);
+      res.render('error');
+    } else {
+      console.log('Fetched recipes:', recipes);
+      res.render("reader-home", {recipes: recipes});
+    }
+  });
+});
 
 
 // Start the server

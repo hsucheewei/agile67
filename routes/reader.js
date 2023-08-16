@@ -2,19 +2,6 @@ const express = require("express");
 const router = express.Router();
 const assert = require("assert");
 
-//reader homepage
-router.get("/", (req, res) => {
-  res.render("reader-home", {
-    img: "/images/sam-moghadam-khamseh-yxZSAjyToP4-unsplash.jpg",
-  });
-});
-
-// Get request for recipe page template
-router.get("/recipe", (req, res) => {
-  const recipeId = req.query.id; // Extract the recipeId from query parameters (will prob need this later on)
-  res.render("recipe");
-});
-
 //Get request for settings page template
 router.get("/settings", (req, res) => {
   // Render the settings.ejs template

@@ -7,8 +7,9 @@
     <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
     <div class="page-content page-no-sidebar">
       <div class="container-lg pt-4">
-        <%- include('home-card.ejs', img); %> <%- include('home-card.ejs', img);
-        %> <%- include('home-card.ejs', img); %>
+        <% recipes.forEach(function(recipe){ %>
+          <%- include('home-card.ejs', {recipe}); %> 
+        <% }); %>
       </div>
       <%- include('footer.ejs') %>
     </div>
