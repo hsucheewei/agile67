@@ -134,8 +134,6 @@ fs.createReadStream('datasets/recipes.csv')
     db.run(insertQuery, [row.Title, row.Ingredients, row.Instructions, row.Image_Name, row.Cleaned_Ingredients], (err) => {
       if (err) {
         console.error('Error inserting data:', err);
-      } else {
-        console.log('Data inserted successfully');
       }
     });
   })
