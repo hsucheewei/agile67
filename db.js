@@ -1,19 +1,21 @@
-const { MongoClient } = require('mongodb')
+const sqlite3 = require('sqlite3').verbose();
 
-let dbConnection
-let uri = 'mongodb+srv://agileteam67:Password123!@cluster0.o7q5qmp.mongodb.net/?retryWrites=true&w=majority'
+let db;
 
-module.exports = {
-  connectToDb: (cb) => {
-    MongoClient.connect(uri)
-      .then(client => {
-        dbConnection = client.db()
-        return cb()
-      })
-      .catch(err => {
-        console.log(err)
-        return cb(err)
-      })
-  },
-  getDb: () => dbConnection
+function connectToDb(callback) {
+  db = new sqlite3.Database('./database.db', function (err) {
+    if (err) {
+      console.error('Error connecting to database:', err);
+      return callback(err);
+    }
+    console.log("Database connected");
+    db.run("PRAGMA foreign_keys=ON"); // Enable foreign key constraints
+    return callback(null);
+  });
 }
+
+function getDb() {
+  return db;
+}
+
+module.exports = { connectToDb, getDb };

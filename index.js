@@ -1,63 +1,40 @@
 const express = require('express');
 const app = express();
-const session = require('express-session'); 
+const session = require('express-session');
 const port = 3000;
 const path = require('path');
 const SQLiteStore = require('connect-sqlite3')(session);
-const sqlite3 = require('sqlite3').verbose();
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-//mongodb connect
-const { getDb, connectToDb } = require('./db');
+const sqlite3 = require('sqlite3').verbose();
+const fs = require('fs');
+const csv = require('csv-parser');
 
-// Generate a secret key for session
-const crypto = require('crypto');
-const secretKey = crypto.randomBytes(32).toString('hex');
-
-// //items in the global namespace are accessible throught out the node application
-// global.db = new sqlite3.Database('./database.db',function(err){
-//   if(err){
-//     console.error(err);
-//     process.exit(1); //Bail out we can't connect to the DB
-//   }else{
-//     console.log("Database connected");
-//     global.db.run("PRAGMA foreign_keys=ON"); //This tells SQLite to pay attention to foreign key constraints
-//   }
-// });
-
-
-// db connection
-let db
-
-connectToDb((err) => {
-  if(!err){
-    app.listen(port, () => {
-      console.log('app listening on port 3000');
-    })
-    db = getDb();
-    console.log('mongoDB database connected')
+// Create a SQLite database connection
+const db = new sqlite3.Database('./database.db', function (err) {
+  if (err) {
+    console.error(err);
+    process.exit(1); // Bail out if unable to connect to the DB
+  } else {
+    console.log("Database connected");
+    db.run("PRAGMA foreign_keys=ON"); // Enable foreign key constraints
   }
-})
+});
 
-
-//express-parser middleware command to parse incoming form data
+// Express middleware for parsing incoming form data
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static assets
 app.use(express.static(path.join(__dirname, 'assets')));
-
-//static command to allow the linking of CSS
-app.use(express.static(path.join(__dirname,'public')));
-
-//static command to allow other seperate scripts
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 
 // Set up session middleware
 app.use(
   session({
     store: new SQLiteStore(),
-    secret: secretKey,
+    secret: 'your_secret_key', // Replace with a secret key
     resave: false,
     saveUninitialized: false,
   })
@@ -70,22 +47,19 @@ passport.use(
       if (err) {
         return done(err);
       }
-      // If no user is found with the provided 'username', return false and a message 
       if (!user) {
         return done(null, false, { message: 'Invalid username or password.' });
       }
-      // Use bcrypt to compare the provided 'password' with the hashed password stored in the 'user' from the database.
       bcrypt.compare(password, user.password, function (err, result) {
-        //if err return message
         if (err || !result) {
           return done(null, false, { message: 'Invalid username or password.' });
         }
-        //if authenticated return null value
         return done(null, user);
       });
     });
   })
 );
+
 
 // Passport serialize and deserialize user functions
 passport.serializeUser((user, done) => {
@@ -107,7 +81,7 @@ const landingRoutes = require('./routes/landing');
 const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
 const leaderBoardRoute = require('./routes/leaderboard');
-const settingsRoute= require('./routes/settings');
+const settingsRoute = require('./routes/settings');
 
 // Authentication middleware to check if the user is authenticated
 function isAuthenticated(req, res, next) {
@@ -123,6 +97,12 @@ app.set('view engine', 'ejs');
 //root of the website
 app.get('/', (req, res) => {
   res.redirect('reader/home');
+});
+
+app.get('/images/:imageName', (req, res) => {
+  const imageName = req.params.imageName;
+  const imagePath = path.join(__dirname, 'datasets', 'recipeImages', imageName);
+  res.sendFile(imagePath);
 });
 
 //this adds routes for readers
@@ -143,4 +123,27 @@ app.use('/leaderboard', leaderBoardRoute);
 
 app.use('/settings', settingsRoute);
 
+// Read data from the CSV file and insert into the database
+fs.createReadStream('datasets/recipes.csv')
+  .pipe(csv())
+  .on('data', (row) => {
+    const insertQuery = `
+      INSERT INTO recipes (Title, Ingredients, Instructions, Image_Name, Cleaned_Ingredients)
+      VALUES (?, ?, ?, ?, ?);
+    `;
+    db.run(insertQuery, [row.Title, row.Ingredients, row.Instructions, row.Image_Name, row.Cleaned_Ingredients], (err) => {
+      if (err) {
+        console.error('Error inserting data:', err);
+      } else {
+        console.log('Data inserted successfully');
+      }
+    });
+  })
+  .on('end', () => {
+    console.log('Data inserted from CSV into the database');
+  });
 
+// Start the server
+app.listen(port, () => {
+  console.log('App listening on port 3000');
+});
