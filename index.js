@@ -121,23 +121,47 @@ app.use('/settings', settingsRoute);
 
 app.use('/about', aboutRoute)
 
-// Read data from the CSV file and insert into the database
-fs.createReadStream('datasets/recipes.csv')
-  .pipe(csv())
-  .on('data', (row) => {
-    const insertQuery = `
-      INSERT INTO recipes (Title, Ingredients, Instructions, Image_Name, Cleaned_Ingredients)
-      VALUES (?, ?, ?, ?, ?);
-    `;
-    db.run(insertQuery, [row.Title, row.Ingredients, row.Instructions, row.Image_Name, row.Cleaned_Ingredients], (err) => {
-      if (err) {
-        console.error('Error inserting data:', err);
+// Check if the "recipes" table exists in the database
+db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", (err, result) => {
+  if (err) {
+    console.error('Error checking for existing table:', err);
+    return;
+  }
+
+  if (result) {
+    // Check if the "recipes" table has any rows
+    db.get("SELECT COUNT(*) AS count FROM recipes;", (rowCountErr, rowCountResult) => {
+      if (rowCountErr) {
+        console.error('Error checking row count:', rowCountErr);
+        return;
+      }
+
+      if (rowCountResult.count > 0) {
+        console.log('The "recipes" table already exists and has rows. Skipping data insertion.');
+      } else {
+        console.log("please wait as we are downloading the data into the database...")
+        // Read data from the CSV file and insert into the database
+        fs.createReadStream('datasets/recipes.csv')
+          .pipe(csv())
+          .on('data', (row) => {
+            const insertQuery = `
+              INSERT INTO recipes (Title, Ingredients, Instructions, Image_Name, Cleaned_Ingredients)
+              VALUES (?, ?, ?, ?, ?);
+            `;
+            db.run(insertQuery, [row.Title, row.Ingredients, row.Instructions, row.Image_Name, row.Cleaned_Ingredients], (err) => {
+              if (err) {
+                console.error('Error inserting data:', err);
+              }
+            });
+          })
+          .on('end', () => {
+            console.log('Data inserted from CSV into the database');
+          });
       }
     });
-  })
-  .on('end', () => {
-    console.log('Data inserted from CSV into the database');
-  });
+  }
+});
+
 
 // Start the server
 app.listen(port, () => {
