@@ -82,6 +82,7 @@ const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
 const leaderBoardRoute = require('./routes/leaderboard');
 const settingsRoute= require('./routes/settings');
+const aboutRoute = require('./routes/about')
 
 // Authentication middleware to check if the user is authenticated
 function isAuthenticated(req, res, next) {
