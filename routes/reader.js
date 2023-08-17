@@ -20,10 +20,4 @@ router.get("/profile", (req, res) => {
   res.render("profile");
 });
 
-//get request for leaderboard
-router.get("/leaderboard", (req, res) => {
-  res.render("leaderboard");
-  });
-
-
 module.exports = router;
