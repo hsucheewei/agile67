@@ -11,8 +11,10 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const flash = require('express-flash')
+const methodOverride = require('method-override')
 
-
+//calling of override method for logout
+app.use(methodOverride('_method'))
 
 // Create a SQLite database connection
 global.db = new sqlite3.Database('./database.db', function (err) {
@@ -44,6 +46,18 @@ function isAuthenticated(req, res, next) {
   res.redirect('/login');
 }
 
+// Only example of how to lock the pages if you are not logged in
+//app.use('/author', isAuthenticated, authorRoutes);
+//this will lock all the get and post request within author routes
+
+//function to prevent logged in users to go back to the login page through url
+function notAuthenticated(req, res, next) {// this should go on things like the login,register and landing routes
+  if (req.notAuthenticated()) {
+    return res.redirect('/');//logged in homepage redirect
+  }
+  next()
+}
+
 //use flash for error messages
 app.use(flash());
 
@@ -60,6 +74,11 @@ app.use(
 //use functions to set up basics and sessions
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.delete('logout',(res,req)=>{
+  req.logOut()
+  req.redirect('/login')
+})
 
 
 //separate routes for the website based on user
