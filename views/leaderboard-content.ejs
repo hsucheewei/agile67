@@ -1,13 +1,13 @@
 <article class="mb-4 border rounded shadow" style="border:1px solid #61876E">
     <div class="row g-0">
         <div class="col-4">
-            <img src="images/<%= Images %>.jpg" class="img-fluid rounded"/>
+            <img src="images/<%= recipe.Image_Name %>.jpg" class="img-fluid rounded"/>
         </div>
         <div class="recipe-info col p-4 d-flex flex-column">
-            <h2 class="recipe-title"><%= titleRecipe %></h2>
+            <h2 class="recipe-title"><%= recipe.Title %></h2>
             <p class="recipe-author"> Author Name </p>
             <div class="d-flex justify-content-end mt-auto">
-                <a href="" role="button" class="d-inline-block btn btn-primary">More...</a>
+                <a href="recipe/<%= recipe.id %>" role="button" class="d-inline-block btn btn-primary">More...</a>
             </div>
         </div>
     </div>

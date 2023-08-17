@@ -4,7 +4,7 @@ const assert = require("assert");
 // const recipes = require("./recipes");
 
 /* const likeCount = 1; */
-
+/*
 router.get("/leaderboard", (req, res, next) => {
 
     global.db.all("SELECT title FROM recipes LIMIT 10 OFFSET 20", 
@@ -67,10 +67,12 @@ router.get("/leaderboard/:title", (req, res, next) => {
         /
         })
     });
-*/
+
 
     
 
  
 
 module.exports = router; 
+
+*/
