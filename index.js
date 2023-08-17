@@ -205,12 +205,12 @@ app.get('/', (req, res) => {
 
 //leaderboard 
 app.get('/leaderboard', (req, res) => {
-  db.all('SELECT id,Title,Image_Name FROM recipes LIMIT 10 OFFSET 20;', (err, recipes) => {
-    if (err || !recipes) {
+  db.all('SELECT id,Title,Image_Name FROM recipes LIMIT 10 OFFSET 20;', (err, row) => {
+    if (err || !row) {
       console.error('Error fetching recipes:', err);
       res.render('error');
     } else {
-      res.render("leaderboard-content", {recipes: recipes});
+      res.render("leaderboard-content", {row: recipes});
     }
   });
 });
