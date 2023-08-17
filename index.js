@@ -10,6 +10,8 @@ const csv = require('csv-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+const flash = require('express-flash')
+
 
 
 // Create a SQLite database connection
@@ -31,22 +33,34 @@ app.use(express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 
-
 // Import the authentication module
 const auth = require('./auth');
+
+// Authentication middleware to check if the user is authenticated
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
+}
+
+//use flash for error messages
+app.use(flash());
 
 // Set up session middleware
 app.use(
   session({
     store: new SQLiteStore(),
-    secret: 'your_secret_key', // Replace with a secret key
+    secret: 'your_secret_key', 
     resave: false,
     saveUninitialized: false,
   })
 );
 
+//use functions to set up basics and sessions
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 //separate routes for the website based on user
 const readerRoutes = require('./routes/reader');
@@ -57,13 +71,7 @@ const leaderBoardRoute = require('./routes/leaderboard');
 const settingsRoute = require('./routes/settings');
 const aboutRoute = require('./routes/about')
 
-// Authentication middleware to check if the user is authenticated
-function isAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect('/login');
-}
+
 
 //set the app to use ejs for rendering
 app.set('view engine', 'ejs');

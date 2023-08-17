@@ -12,11 +12,11 @@ passport.use(
         return done(err);
       }
       if (!user) {
-        return done(null, false, { message: 'Invalid username or password.' });
+        return done(null, false, { message: 'Invalid username' });
       }
       bcrypt.compare(password, user.password, function (err, result) {
         if (err || !result) {
-          return done(null, false, { message: 'Invalid username or password.' });
+          return done(null, false, { message: 'Invalid password.' });
         }
         return done(null, user);
       });
