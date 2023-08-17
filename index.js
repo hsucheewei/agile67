@@ -13,7 +13,7 @@ const bcrypt = require('bcrypt');
 
 
 // Create a SQLite database connection
-const db = new sqlite3.Database('./database.db', function (err) {
+global.db = new sqlite3.Database('./database.db', function (err) {
   if (err) {
     console.error(err);
     process.exit(1); // Bail out if unable to connect to the DB
@@ -181,3 +181,4 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log('App listening on port 3000');
 });
+
