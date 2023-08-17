@@ -58,7 +58,8 @@
           }
 
           $(window).scroll(function () {
-            if ((window.innerHeight + Math.round(window.scrollY)) >= document.body.offsetHeight) {
+            if (window.scrollY + window.innerHeight >=
+              document.documentElement.scrollHeight) {
               loadMoreRecipes();
               console.log("bottom");
             }
