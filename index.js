@@ -86,7 +86,7 @@ const readerRoutes = require('./routes/reader');
 const landingRoutes = require('./routes/landing');
 const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
-const leaderBoardRoute = require('./routes/leaderboard');
+
 const settingsRoute = require('./routes/settings');
 const aboutRoute = require('./routes/about')
 
@@ -110,7 +110,7 @@ app.use('/register', registerRoute);
 // Add the login route to the app
 app.use('/login', loginRoute);
 
-app.use('/leaderboard', leaderBoardRoute);
+
 
 app.use('/settings', settingsRoute);
 
