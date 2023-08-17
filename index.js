@@ -173,7 +173,6 @@ app.get('/recipe/:id', (req, res) => {
       console.error('Error fetching recipe:', err);
       res.render('error');
     } else {
-      console.log('Fetched recipe:', recipe);
 
       // Manually split the Cleaned_Ingredients string and trim each ingredient
       // Remove square brackets and split using single quotes as delimiters
