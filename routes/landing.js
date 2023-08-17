@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
 
 // Login button to render login page
 router.get("/about-us", function (req, res) {
-  res.render("landing-about-us");
+  res.render("about-us");
 });
 
 // Login button to render login page

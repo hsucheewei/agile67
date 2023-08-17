@@ -89,7 +89,6 @@ const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
 
 const settingsRoute = require('./routes/settings');
-const aboutRoute = require('./routes/about')
 
 
 
@@ -114,8 +113,6 @@ app.use('/login', loginRoute);
 
 
 app.use('/settings', settingsRoute);
-
-app.use('/about', aboutRoute)
 
 // Check if the "recipes" table exists in the database
 db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", (err, result) => {

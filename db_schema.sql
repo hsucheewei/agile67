@@ -89,3 +89,11 @@ CREATE TABLE users (
     username TEXT NOT NULL,
     password TEXT NOT NULL
 );
+
+CREATE TABLE user_likes (
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER,
+    recipe_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id)
+);
