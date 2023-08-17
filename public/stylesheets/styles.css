@@ -51,11 +51,11 @@
 }
 
 .nav-item btn {
-  color: #FFF;
+  color: #fff;
 }
 
 /* hover styles */
-.input-group-append button:hover{
+.input-group-append button:hover {
   color: rgb(0, 0, 0);
   background-color: rgb(177, 192, 157);
 }
@@ -89,7 +89,7 @@
   padding-bottom: 3px;
   margin-bottom: 3px;
 }
-.sidebar-burger-menu button:hover{
+.sidebar-burger-menu button:hover {
   color: #61876e;
 }
 
@@ -152,7 +152,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
-  word-break: var(--word-break, 'none');
+  word-break: var(--word-break, "none");
   overflow: hidden;
 }
 
@@ -195,7 +195,15 @@ button.bg-primary:focus {
 /* landing styling */
 
 #landing-hero-text {
-  background: url('../images/vegetables-set-left-black-slate.jpg');
+  background: url("../images/vegetables-set-left-black-slate.jpg");
   background-size: cover;
   color: white;
+}
+
+#myRecipesBtn:hover {
+  background-color: rgb(237, 236, 236);
+}
+
+#likedRecipesBtn:hover {
+  background-color: rgb(237, 236, 236);
 }

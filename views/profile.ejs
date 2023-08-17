@@ -6,13 +6,91 @@
   <body>
     <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
     <div class="page-content page-no-sidebar">
-      
-        
-    </div>
+      <div class="container mt-4">
+        <div class="row">
+          <div class="col-md-1">
+            <!-- Profile Picture -->
+            <i
+              class="fa-solid fa-circle-user"
+              aria-label="user profile"
+              style="font-size: 5rem"
+            ></i>
+          </div>
+          <div class="col-md-10">
+            <!-- Author Name -->
+            <h2 class="mt-2">Author Name</h2>
+            <!-- Bio -->
+            <p class="md-2">
+              Bio: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </p>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <button
+              id="myRecipesBtn"
+              class="btn btn-outline-secondary mr-2 border-0"
+            >
+              My Recipes
+            </button>
+            <button
+              id="likedRecipesBtn"
+              class="btn btn-outline-secondary border-0"
+            >
+              Liked Recipes
+            </button>
+          </div>
+          <hr class="mt-0" />
+        </div>
 
+        <div class="row mt-4" id="recipesContainer"></div>
+      </div>
+    </div>
     <%- include('footer.ejs') %>
+    <script>
+      const myRecipesBtn = document.getElementById("myRecipesBtn");
+      const likedRecipesBtn = document.getElementById("likedRecipesBtn");
+      const recipesContainer = document.getElementById("recipesContainer");
+
+      const myRecipes = [
+        { title: "Recipe 1", description: "Description 1" },
+        { title: "Recipe 2", description: "Description 2" },
+      ];
+
+      const likedRecipes = [
+        { title: "Liked Recipe 1", description: "Liked Description 1" },
+        { title: "Liked Recipe 2", description: "Liked Description 2" },
+      ];
+
+      function displayRecipes(recipes) {
+        recipesContainer.innerHTML = "";
+        recipes.forEach((recipe) => {
+          const recipeCard = document.createElement("div");
+          recipeCard.className = "col-md-4 mb-4";
+          recipeCard.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${recipe.title}</h5>
+                            <p class="card-text">${recipe.description}</p>
+                        </div>
+                    </div>
+                `;
+          recipesContainer.appendChild(recipeCard);
+        });
+      }
+
+      myRecipesBtn.addEventListener("click", () => {
+        displayRecipes(myRecipes);
+      });
+
+      likedRecipesBtn.addEventListener("click", () => {
+        displayRecipes(likedRecipes);
+      });
+
+      // Initialize with default content (e.g., My Recipes)
+      displayRecipes(myRecipes);
+    </script>
     <!-- page scripts -->
     <script src="/scripts/sidebar.js"></script>
-
   </body>
 </html>
