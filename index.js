@@ -12,6 +12,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const flash = require('express-flash')
 const methodOverride = require('method-override')
+const ejs = require('ejs');
 
 //calling of override method for logout
 app.use(methodOverride('_method'))
@@ -65,7 +66,7 @@ app.use(flash());
 app.use(
   session({
     store: new SQLiteStore(),
-    secret: 'your_secret_key', 
+    secret: 'your_secret_key',
     resave: false,
     saveUninitialized: false,
   })
@@ -75,7 +76,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.delete('logout',(res,req)=>{
+app.delete('logout', (res, req) => {
   req.logOut()
   req.redirect('/login')
 })
@@ -197,7 +198,7 @@ app.get('/', (req, res) => {
       console.error('Error fetching recipes:', err);
       res.render('error');
     } else {
-      res.render("reader-home", {recipes});
+      res.render("reader-home", { recipes });
     }
   });
 });
@@ -209,10 +210,34 @@ app.get('/leaderboard', (req, res) => {
       console.error('Error fetching recipes:', err);
       res.render('error');
     } else {
-      res.render("leaderboard", {recipes});
+      res.render("leaderboard", { recipes });
     }
   });
 });
+
+// Add this route to handle infinite scrolling
+app.get('/load-more', (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 5; // Number of recipes to load per request
+  const offset = (page - 1) * pageSize;
+
+  db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes LIMIT ${pageSize} OFFSET ${offset};`, (err, recipes) => {
+    if (err || !recipes) {
+      console.error('Error fetching more recipes:', err);
+      res.status(500).json({ error: 'Error fetching more recipes' });
+    } else {
+      res.json({ recipes });
+    }
+  });
+});
+
+
+app.get('/render-home-card', (req, res) => {
+  const recipe = req.query.recipe;
+  res.render('home-card', { recipe }); // Use the appropriate view name
+});
+
+
 
 // Start the server
 app.listen(port, () => {

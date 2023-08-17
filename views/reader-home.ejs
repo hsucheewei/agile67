@@ -1,20 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('head.ejs') %>
-  </head>
-  <body>
-    <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
-    <div class="page-content page-no-sidebar">
-      <div class="container-lg pt-4">
-        <% recipes.forEach(function(recipe){ %>
-          <%- include('home-card.ejs', {recipe}); %> 
-        <% }); %>
+
+<head>
+  <%- include('head.ejs') %>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body>
+  <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
+      <div class="page-content page-no-sidebar">
+        <div class="container-lg pt-4">
+          <% recipes.forEach(function(recipe){ %>
+            <%- include('home-card.ejs', {recipe}); %>
+              <% }); %>
+                <div class="recipe-placeholder"></div>
+        </div>
+        <%- include('footer.ejs') %>
       </div>
-      <%- include('footer.ejs') %>
-    </div>
-    <div class="black-overlay"></div>
-    <!-- page scripts -->
-    <script src="/scripts/sidebar.js"></script>
-  </body>
+      <div class="black-overlay"></div>
+      <!-- page scripts -->
+      <script src="/scripts/sidebar.js"></script>
+      <script>
+        $(document).ready(function () {
+          let page = 1; // Initial page number
+          const recipesContainer = $('.container-lg');
+          const placeholder = $('.recipe-placeholder');
+          let isLoading = false; // Flag to prevent multiple AJAX requests
+
+          function loadMoreRecipes() {
+            if (isLoading) {
+              return; // If a request is already in progress, don't send another
+            }
+            isLoading = true; // Set the flag to indicate that a request is in progress
+            console.log('Loading more recipes...');
+
+            $.ajax({
+              url: `/load-more?page=${page}`,
+              method: 'GET',
+              success: function (data) {
+                console.log(data);
+                if (data.recipes.length > 0) {
+                  data.recipes.forEach(function (recipe) {
+                    $.get(`/render-home-card`, { recipe }, function (recipeHtml) {
+                      recipesContainer.append(recipeHtml);
+                    });
+                  });
+                  page++;
+                }
+                isLoading = false; // Reset the flag after successful request
+              },
+              error: function (error) {
+                console.log('Error loading more recipes:', error);
+                isLoading = false; // Reset the flag on error as well
+              },
+            });
+          }
+
+          $(window).scroll(function () {
+            if ((window.innerHeight + Math.round(window.scrollY)) >= document.body.offsetHeight) {
+              loadMoreRecipes();
+              console.log("bottom");
+            }
+          });
+        });
+      </script>
+</body>
+
 </html>
