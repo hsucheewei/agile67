@@ -177,7 +177,7 @@ app.get('/recipe/:id', (req, res) => {
       // Manually split the Cleaned_Ingredients string and trim each ingredient
       // Remove square brackets and split using single quotes as delimiters
       const cleanedIngredientsArray = recipe.Cleaned_Ingredients
-        .slice(1, -1) // Remove square brackets
+        .slice(2, -2) // Remove square brackets and ' at start and end of array
         .split("', '")
         .map((ingredient) => ingredient.trim()); // Trim any extra spaces
 
