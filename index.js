@@ -191,7 +191,7 @@ app.get('/leaderboard', (req, res) => {
       console.error('Error fetching recipes:', err);
       res.render('error');
     } else {
-      res.render("leaderboard", {recipes: recipes});
+      res.render("leaderboard-content", {recipes: recipes});
     }
   });
 });
