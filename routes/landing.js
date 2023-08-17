@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
 });
 
 // Login button to render login page
-router.get("/about-us", function (req, res) {
+router.get("about-us", function (req, res) {
   res.render("landing-about-us");
 });
 

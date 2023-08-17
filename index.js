@@ -114,7 +114,7 @@ app.use('/login', loginRoute);
 
 app.use('/settings', settingsRoute);
 
-app.use('/about', aboutRoute)
+app.use('/about-us', aboutRoute);
 
 // Check if the "recipes" table exists in the database
 db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", (err, result) => {
@@ -204,7 +204,7 @@ app.get('/', (req, res) => {
 
 //leaderboard 
 app.get('/leaderboard', (req, res) => {
-  db.all('SELECT id,Title,Image_Name FROM recipes LIMIT 10 OFFSET 20;', (err, recipes) => {
+  db.all('SELECT id,Title,Image_Name FROM recipes LIMIT 10 OFFSET 20;', (err, recipe) => {
     if (err || !recipes) {
       console.error('Error fetching recipes:', err);
       res.render('error');
