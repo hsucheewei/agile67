@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 
 // redirect based on results of authentication
 router.post('/', passport.authenticate('local', {
-  successRedirect: '/', // Replace with the path to the dashboard page after successful login
+  successRedirect: '/home', // Replace with the path to the dashboard page after successful login
   failureRedirect: '/login',
   failureFlash:true
 }));

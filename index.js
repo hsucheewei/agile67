@@ -11,11 +11,9 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const flash = require('express-flash')
-const methodOverride = require('method-override')
 const ejs = require('ejs');
 
-//calling of override method for logout
-app.use(methodOverride('_method'))
+
 
 // Create a SQLite database connection
 global.db = new sqlite3.Database('./database.db', function (err) {
@@ -44,7 +42,7 @@ function isAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/login');
+  res.redirect('login');
 }
 
 // Only example of how to lock the pages if you are not logged in
@@ -53,8 +51,8 @@ function isAuthenticated(req, res, next) {
 
 //function to prevent logged in users to go back to the login page through url
 function notAuthenticated(req, res, next) {// this should go on things like the login,register and landing routes
-  if (req.notAuthenticated()) {
-    return res.redirect('/');//logged in homepage redirect
+  if (req.isAuthenticated()) {
+    return res.redirect('/home');//logged in homepage redirect
   }
   next()
 }
@@ -65,8 +63,8 @@ app.use(flash());
 // Set up session middleware
 app.use(
   session({
-    store: new SQLiteStore(),
-    secret: 'your_secret_key',
+    store: new SQLiteStore({ db: 'sessions.db', dir: __dirname }), //store session in sqlitedb using connect-sqlite3
+    secret: 'secret_key',
     resave: false,
     saveUninitialized: false,
   })
@@ -76,18 +74,12 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.delete('logout', (res, req) => {
-  req.logOut()
-  req.redirect('/login')
-})
-
 
 //separate routes for the website based on user
-const readerRoutes = require('./routes/reader');
+const userRoutes = require('./routes/user');
 const landingRoutes = require('./routes/landing');
 const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
-
 const settingsRoute = require('./routes/settings');
 
 
@@ -95,24 +87,21 @@ const settingsRoute = require('./routes/settings');
 //set the app to use ejs for rendering
 app.set('view engine', 'ejs');
 
-
 //this adds routes for readers
-app.use('/', readerRoutes);
+app.use('/user', isAuthenticated, userRoutes);
 // Only authenticated users can access reader routes
 // app.use('/reader', isAuthenticated, readerRoutes);
 
 // unauthenticated users access landing routes
-app.use('/landing', landingRoutes);
+app.use('/landing',notAuthenticated, landingRoutes);
 
 // this adds routes for user registration
-app.use('/register', registerRoute);
+app.use('/register',notAuthenticated, registerRoute);
 
 // Add the login route to the app
-app.use('/login', loginRoute);
+app.use('/login',notAuthenticated, loginRoute);
 
-
-
-app.use('/settings', settingsRoute);
+app.use('/settings', isAuthenticated, settingsRoute);
 
 // Check if the "recipes" table exists in the database
 db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", (err, result) => {
@@ -158,13 +147,13 @@ db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", 
 });
 
 
-app.get('/images/:imageName', (req, res) => {
+app.get('/images/:imageName', isAuthenticated, (req, res) => {
   const imageName = req.params.imageName;
   const imagePath = path.join(__dirname, 'datasets', 'recipeImages', imageName);
   res.sendFile(imagePath);
 });
 
-app.get('/recipe/:id', (req, res) => {
+app.get('/recipe/:id', isAuthenticated, (req, res) => {
   const recipeId = req.params.id;
   db.get('SELECT * FROM recipes WHERE id = ?', [recipeId], (err, recipe) => {
     if (err || !recipe) {
@@ -188,8 +177,14 @@ app.get('/recipe/:id', (req, res) => {
   });
 });
 
+//default page when opening the application
+app.get('/', notAuthenticated, (req, res) => {
+  res.render("landing");
+});
+
+
 //render home page
-app.get('/', (req, res) => {
+app.get('/home', isAuthenticated, (req, res) => {
   db.all('SELECT id,Title,Instructions,Image_Name FROM recipes LIMIT 5;', (err, recipes) => {
     if (err || !recipes) {
       console.error('Error fetching recipes:', err);
@@ -201,7 +196,7 @@ app.get('/', (req, res) => {
 });
 
 //leaderboard 
-app.get('/leaderboard', (req, res) => {
+app.get('/leaderboard',isAuthenticated, (req, res) => {
   db.all('SELECT id,Title,Image_Name FROM recipes LIMIT 10 OFFSET 20;', (err, recipes) => {
     if (err || !recipes) {
       console.error('Error fetching recipes:', err);
@@ -213,7 +208,10 @@ app.get('/leaderboard', (req, res) => {
 });
 
 // Add this route to handle infinite scrolling
-app.get('/load-more', (req, res) => {
+// to whoever is doing this component later, this will prob not work it will have to be done as a script added to the ejs page like the side bar
+// because you will need to add a window listner to see if the page is scrolled to the bottom using a offset, then you need to make a ajax request to load more recipes
+//and append it to the dom
+app.get('/load-more', isAuthenticated, (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = 5; // Number of recipes to load per request
   const offset = (page - 1) * pageSize;
@@ -229,13 +227,13 @@ app.get('/load-more', (req, res) => {
 });
 
 
-app.get('/render-home-card', (req, res) => {
+app.get('/render-home-card', isAuthenticated, (req, res) => {
   const recipe = req.query.recipe;
   res.render('home-card', { recipe }); // Use the appropriate view name
 });
 
 //likes db
-app.get('/leaderboard', (req, res) => {
+app.get('/leaderboard', isAuthenticated, (req, res) => {
   db.all('SELECT recipes.*, COUNT(user_likes.id) AS likes_count FROM recipes LEFT JOIN user_likes ON recipes.id = user_likes.recipe_id GROUP BY recipes.id', (err, recipes) => {
       if (err) {
           console.error(err);
@@ -245,7 +243,7 @@ app.get('/leaderboard', (req, res) => {
   });s
 });
 
-app.post('/likes-content/:id', (req, res) => {
+app.post('/likes-content/:id', isAuthenticated, (req, res) => {
   const recipeId = req.params.id;
   // get user ID from the session or authentication process
   const userId = 1; // replace with the actual user ID
