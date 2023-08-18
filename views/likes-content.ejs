@@ -1,25 +1,11 @@
-<article class="mb-4">
+<article class="h-25 d-inline-block">
     <div class="row g-0">
-        <div class="likes col p-4 d-flex flex-column">
-            
-            <button  class="btn btn-primary" id="likeButton">Like 
-                <span id="likeCount">
-                </span>
-            </button> 
+        <div class="likes col p-4">
+                <form method="post" action="/leaderboard/<%= recipe.id %>"> 
+                    <button type="submit" class="btn btn-primary" id="likeButton"> Like <%= recipe.likes_count || 0 %></button>        
+                </form>
 
-            
         </div> 
     </div>
-    <script>
-        const likeButton = document.getElementById("likeButton");
-        const likeCountElement = document.getElementById("likeCount");
-         let likeCount = 0;
-
-        likeButton.addEventListener("click", () => {
-            likeCount++;
-            likeCountElement.textContent = likeCount;
-    });
-    </script>
-
-
+   
 </article>

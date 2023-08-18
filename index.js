@@ -234,6 +234,31 @@ app.get('/render-home-card', (req, res) => {
   res.render('home-card', { recipe }); // Use the appropriate view name
 });
 
+//likes db
+app.get('/leaderboard', (req, res) => {
+  db.all('SELECT recipes.*, COUNT(user_likes.id) AS likes_count FROM recipes LEFT JOIN user_likes ON recipes.id = user_likes.recipe_id GROUP BY recipes.id', (err, recipes) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).send('Internal Server Error');
+      }
+      res.render('leaderboard', { recipes });
+  });s
+});
+
+app.post('/likes-content/:id', (req, res) => {
+  const recipeId = req.params.id;
+  // get user ID from the session or authentication process
+  const userId = 1; // replace with the actual user ID
+
+  db.run('INSERT INTO user_likes (user_id, recipe_id) VALUES (?, ?)', [userId, recipeId], (err) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).send('Internal Server Error');
+      }
+      res.redirect('/leaderboard');
+  });
+});
+
 
 
 // Start the server
