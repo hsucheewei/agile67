@@ -172,8 +172,30 @@ app.get('/recipe/:id', isAuthenticated, (req, res) => {
       // Split the instructions by newlines into an array
       const instructionsArray = recipe.Instructions.split('\n');
       recipe.Instructions = instructionsArray;
-      res.render('recipe', { recipe });
+      //get existing comments and show them on the rendered page
+      db.all('SELECT * FROM user_comments WHERE recipe_id = ? ORDER BY posted_timestamp DESC;', [recipeId], (err, comments) => {
+        if (err) {
+          next(err);
+        } else {
+          res.render('recipe', { recipe,comments });
+        }
+      });
     }
+  });
+});
+
+// insert new comment into db and refresh recipe page
+app.post('/recipe/:id/commenting', isAuthenticated, (req, res) => {
+  // get user ID from the session or authentication process
+  const userId = 1; // replace with the actual user ID
+  db.run('INSERT INTO user_comments (comment_content,user_id,recipe_id) VALUES (?,?,?)', [req.body.new_comment, userId, req.params.id], (err) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).send('Internal Server Error');
+      }
+      else {
+        res.redirect('/recipe/'+req.params.id);
+      };
   });
 });
 
@@ -263,4 +285,3 @@ app.post('/likes-content/:id', isAuthenticated, (req, res) => {
 app.listen(port, () => {
   console.log('App listening on port 3000');
 });
-
