@@ -153,6 +153,7 @@ app.get('/images/:imageName', isAuthenticated, (req, res) => {
   res.sendFile(imagePath);
 });
 
+//if you run into an error where the local host does not connect PLEASE clean and build the db
 app.get('/recipe/:id', isAuthenticated, (req, res) => {
   const recipeId = req.params.id;
   db.get('SELECT * FROM recipes WHERE id = ?', [recipeId], (err, recipe) => {
