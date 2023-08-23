@@ -37,3 +37,5 @@ CREATE TABLE IF NOT EXISTS user_comments (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
 );
+
+

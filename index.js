@@ -103,6 +103,56 @@ app.use('/login',notAuthenticated, loginRoute);
 
 app.use('/settings', isAuthenticated, settingsRoute);
 
+// Generating a password for epicurious (default user for CSV injections into the table)
+// Password for the default user stored into a variable for db insertion
+const epiPassword = 'epipassword';
+
+// Check if the user "Epicurious" already exists
+db.get('SELECT id FROM users WHERE username = ?', ['epicurious'], (err, user) => {
+  if (err) {
+    console.error('Error checking for existing user:', err);
+  } else if (user) {
+    console.log('Default user "Epicurious" already exists. Checking for recipes table...');
+  } else {
+    // User doesn't exist, proceed to generate and insert the hashed password for the default user
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) {
+        console.error('Error generating salt:', err);
+      } else {
+        bcrypt.hash(epiPassword, salt, (err, hash) => {
+          if (err) {
+            console.error('Error hashing password:', err);
+          } else {
+            // 'Hash' variable to insert password into the database
+            const hashedPassword = hash;
+
+            // insertion query for the default user
+            const insertUserQuery = `
+              INSERT INTO users (firstName, lastName, username, password)
+              VALUES (?, ?, ?, ?);
+            `;
+
+            //insertion values for the default user
+            const values = ['Epicurious', 'Website', 'epicurious', hashedPassword];
+
+            db.run(insertUserQuery, values, (err) => {
+              if (err) {
+                console.error('Error inserting user:', err);
+              } else {
+                console.log('Default user "Epicurious" added successfully. Proceeding with data from CSV...');
+              }
+
+              // Close the database connection
+              db.close();
+            });
+          }
+        });
+      }
+    });
+  }
+});
+
+
 // Check if the "recipes" table exists in the database
 db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", (err, result) => {
   if (err) {
