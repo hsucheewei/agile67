@@ -1,11 +1,17 @@
 <article class="h-25 d-inline-block">
     <div class="row g-0">
         <div class="likes col p-4">
-                <form method="post" action="/leaderboard/<%= recipe.id %>"> 
+                <span id="totalLikes"> 0 </span> <!-- add in the total likes into the value-->
+                <form id="likeButtonForm" method="post" action="/leaderboard/<%= recipe.id %>"> 
+                    <input type="hidden" name="recipeId" value="<%= recipe.id %>">
                     <button type="submit" class="btn btn-primary" id="likeButton"> Like <%= recipe.likes_count || 0 %></button>        
                 </form>
-
+                
         </div> 
     </div>
    
 </article>
+
+
+
+

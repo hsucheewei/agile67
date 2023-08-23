@@ -3,7 +3,7 @@
 PRAGMA foreign_keys=ON;
 
 CREATE TABLE IF NOT EXISTS recipes (
-  id INTEGER PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   Title TEXT,
   Ingredients TEXT,
   Instructions TEXT,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS recipes (
 );
 
 CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     firstName TEXT NOT NULL,
     lastName TEXT NOT NULL,
     username TEXT NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS user_likes (
-    number_likes INTEGER,
+    likes_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     recipe_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES users(id),
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS user_likes (
 );
 
 CREATE TABLE IF NOT EXISTS user_comments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    comments_id INTEGER PRIMARY KEY AUTOINCREMENT,
     comment_content TEXT NOT NULL,
     posted_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     user_id INTEGER,
