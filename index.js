@@ -107,94 +107,103 @@ app.use('/settings', isAuthenticated, settingsRoute);
 // Password for the default user stored into a variable for db insertion
 const epiPassword = 'epipassword';
 
-// Check if the user "Epicurious" already exists
-db.get('SELECT id FROM users WHERE username = ?', ['epicurious'], (err, user) => {
-  if (err) {
-    console.error('Error checking for existing user:', err);
-  } else if (user) {
-    console.log('Default user "Epicurious" already exists. Checking for recipes table...');
-  } else {
-    // User doesn't exist, proceed to generate and insert the hashed password for the default user
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) {
-        console.error('Error generating salt:', err);
-      } else {
-        bcrypt.hash(epiPassword, salt, (err, hash) => {
-          if (err) {
-            console.error('Error hashing password:', err);
-          } else {
-            // 'Hash' variable to insert password into the database
-            const hashedPassword = hash;
+function insertDefaultUser(callback) {
+  // Check if the user "Epicurious" already exists
+  db.get('SELECT id FROM users WHERE username = ?', ['epicurious'], (err, user) => {
+    if (err) {
+      console.error('Error checking for existing user:', err);
+    } else if (user) {
+      console.log('Default user "Epicurious" already exists. Checking for recipes table...');
+      callback(); // Call the callback function to proceed with the next step
+    } else {
+      // User doesn't exist, proceed to generate and insert the hashed password for the default user
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) {
+          console.error('Error generating salt:', err);
+        } else {
+          bcrypt.hash(epiPassword, salt, (err, hash) => {
+            if (err) {
+              console.error('Error hashing password:', err);
+            } else {
+              // 'Hash' variable to insert password into the database
+              const hashedPassword = hash;
 
-            // insertion query for the default user
-            const insertUserQuery = `
-              INSERT INTO users (firstName, lastName, username, password)
-              VALUES (?, ?, ?, ?);
-            `;
+              // insertion query for the default user
+              const insertUserQuery = `
+                INSERT INTO users (firstName, lastName, username, password)
+                VALUES (?, ?, ?, ?);
+              `;
 
-            //insertion values for the default user
-            const values = ['Epicurious', 'Website', 'epicurious', hashedPassword];
+              //insertion values for the default user
+              const values = ['Epicurious', 'Website', 'epicurious', hashedPassword];
 
-            db.run(insertUserQuery, values, (err) => {
-              if (err) {
-                console.error('Error inserting user:', err);
-              } else {
-                console.log('Default user "Epicurious" added successfully. Proceeding with data from CSV...');
-              }
+              db.run(insertUserQuery, values, (err) => {
+                if (err) {
+                  console.error('Error inserting user:', err);
+                } else {
+                  console.log('Default user "Epicurious" added successfully.');
+                }
+                callback(); // Call the callback function to proceed with the next step
 
-              // Close the database connection
-              db.close();
-            });
-          }
-        });
-      }
-    });
-  }
-});
-
-
-// Check if the "recipes" table exists in the database
-db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", (err, result) => {
-  if (err) {
-    console.error('Error checking for existing table:', err);
-    return;
-  }
-
-  if (result) {
-    // Check if the "recipes" table has any rows
-    db.get("SELECT COUNT(*) AS count FROM recipes;", (rowCountErr, rowCountResult) => {
-      if (rowCountErr) {
-        console.error('Error checking row count:', rowCountErr);
-        return;
-      }
-
-      if (rowCountResult.count > 0) {
-        console.log('The "recipes" table already exists and has rows. Skipping data insertion.');
-        console.log('The application is ready for launch.');
-      } else {
-        console.log("please wait as we are downloading the data into the database...")
-        // Read data from the CSV file and insert into the database
-        fs.createReadStream('datasets/recipes.csv')
-          .pipe(csv())
-          .on('data', (row) => {
-            const insertQuery = `
-              INSERT INTO recipes (Title, Ingredients, Instructions, Image_Name, Cleaned_Ingredients)
-              VALUES (?, ?, ?, ?, ?);
-            `;
-            db.run(insertQuery, [row.Title, row.Ingredients, row.Instructions, row.Image_Name, row.Cleaned_Ingredients], (err) => {
-              if (err) {
-                console.error('Error inserting data:', err);
-              }
-            });
-          })
-          .on('end', () => {
-            console.log('Data inserted from CSV into the database');
-            console.log('The application is ready for launch.');
+                
+              });
+            }
           });
-      }
-    });
-  }
-});
+        }
+      });
+    }
+  });
+}
+
+function insertCSVData() {
+  // Check if the "recipes" table exists in the database
+  db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes';", (err, result) => {
+    if (err) {
+      console.error('Error checking for existing table:', err);
+      return;
+    }
+
+    if (result) {
+      // Check if the "recipes" table has any rows
+      db.get("SELECT COUNT(*) AS count FROM recipes;", (rowCountErr, rowCountResult) => {
+        if (rowCountErr) {
+          console.error('Error checking row count:', rowCountErr);
+          return;
+        }
+
+        if (rowCountResult.count > 0) {
+          console.log('The "recipes" table already exists and has rows. Skipping data insertion.');
+          console.log('The application is ready for launch.');
+        } else {
+          console.log("Please wait as we are downloading the data into the database...");
+          // Read data from the CSV file and insert into the database
+          fs.createReadStream('datasets/recipes.csv')
+            .pipe(csv())
+            .on('data', (row) => {
+              const insertQuery = `
+                INSERT INTO recipes (Title, Ingredients, Instructions, Image_Name, Cleaned_Ingredients, user_id)
+                VALUES (?, ?, ?, ?, ?, ?);
+              `;
+              db.run(insertQuery, [row.Title, row.Ingredients, row.Instructions, row.Image_Name, row.Cleaned_Ingredients, 1], (err) => {
+                if (err) {
+                  console.error('Error inserting data:', err);
+                }
+              });
+            })
+            .on('end', () => {
+              console.log('Data inserted from CSV into the database');
+              console.log('The application is ready for launch.');
+             
+            });
+        }
+      });
+    }
+  });
+}
+
+// Call the functions sequentially(this must be done or it will load at the functions 
+//at the same time which will cause some recipes to fail when connecting to default user)
+insertDefaultUser(insertCSVData);
 
 
 app.get('/images/:imageName', isAuthenticated, (req, res) => {

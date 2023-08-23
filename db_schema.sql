@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS recipes (
   Ingredients TEXT,
   Instructions TEXT,
   Image_Name TEXT,
-  Cleaned_Ingredients TEXT
+  Cleaned_Ingredients TEXT,
+  user_id INTEGER, -- id to connect recipes to the user
+  FOREIGN KEY (user_id) REFERENCES users(id) -- Foreign key relationship with users
 );
 
 CREATE TABLE IF NOT EXISTS users (
