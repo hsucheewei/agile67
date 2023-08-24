@@ -19,13 +19,24 @@ sideMenuIcon.onclick = function () {
   sidebar.classList.toggle("minimised-sidebar");
   pageContent.classList.toggle("page-no-sidebar");
   blackOverlay.style.display = "none";
+  enableBodyScroll();
 };
 
 menuIcon.addEventListener("click", function () {
   blackOverlay.style.display = "block";
+  disableBodyScroll();
 });
 
 blackOverlay.addEventListener("click", function () {
   blackOverlay.style.display = "none";
   sidebar.classList.toggle("minimised-sidebar");
+  enableBodyScroll()
 });
+
+function disableBodyScroll() {
+  document.body.style.overflow = 'hidden';
+}
+
+function enableBodyScroll() {
+  document.body.style.overflow = '';
+}
