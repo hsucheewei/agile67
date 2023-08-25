@@ -8,21 +8,29 @@
 <body>
   <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
 
-      <div class="page-content page-no-sidebar m-4">
+      <div class="page-content page-no-sidebar m-5">
         <article>
           <div class="row">
             <div class="d-flex align-items-center justify-content-between mt-5">
               <h1>
                 <%= recipe.Title %>
-              </h1>
-              <!-- Like button -->
-              <button class="btn btn-primary">Like</button>
+              </h1>              
             </div>
+            <p>By <%= recipe.firstName %> <%= recipe.lastName %></p>
             <div class="col-md-4">
               <img class="img-fluid" src="/images/<%= recipe.Image_Name %>.jpg" " alt=" <%=recipe.Title %>" />
             </div>
           </div>
-
+          <!-- Like button -->
+          
+          <div class="recipe_like_button" >
+            <button class="btn btn-transparent mt-2" id="likeButton" data-recipe-id="<%= recipe.id %>">
+              <i class="bi bi-bookmark-heart p-2" style="font-size: 1.5rem;"></i> Like
+              <span id="likesCount"><%= recipe.likes %></span> 
+            </button>
+          </div>
+          
+          <!-- article content -->
           <div class="mb-4 mt-4">
             <div class="row">
               <!-- Ingredients Column -->
@@ -63,7 +71,7 @@
           <form method="POST" action="/recipe/<%= recipe.id %>/commenting">
             <div class="mb-3">
               <label for="comment">Add a comment:</label>
-              <textarea class="form-control h-100" id="comment" rows="3" name="new_comment" type="text"></textarea>
+              <textarea class="form-control h-100 mt-2" id="comment" rows="3" name="new_comment" type="text" style="border: solid rgb(97, 135, 110) 2px;"></textarea>
             </div>
             <div class="d-flex justify-content-between">
               <div></div>
@@ -85,6 +93,7 @@
 
       <%- include('footer.ejs') %>
       <div class="black-overlay"></div>
+      <script src="/scripts/likes.js"></script>
       <script src="/scripts/sidebar.js"></script>
 </body>
 

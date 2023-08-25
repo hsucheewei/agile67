@@ -215,7 +215,16 @@ app.get('/images/:imageName', isAuthenticated, (req, res) => {
 //if you run into an error where the local host does not connect PLEASE clean and build the db
 app.get('/recipe/:id', isAuthenticated, (req, res) => {
   const recipeId = req.params.id;
-  db.get('SELECT * FROM recipes WHERE id = ?', [recipeId], (err, recipe) => {
+  const userId = req.user.id; // Assuming you have user data available through req.user
+
+  db.get(`
+  SELECT recipe.*, user.firstName, user.lastName, COUNT(like.likes_id) AS likes
+  FROM recipes AS recipe
+  JOIN users AS user ON recipe.user_id = user.id
+  LEFT JOIN user_likes AS like ON recipe.id = like.recipe_id AND like.user_id = ?
+  WHERE recipe.id = ?
+  GROUP BY recipe.id, user.firstName, user.lastName;
+`, [userId, recipeId], (err, recipe) => {
     if (err || !recipe) {
       console.error('Error fetching recipe:', err);
       res.render('error');
@@ -237,9 +246,61 @@ app.get('/recipe/:id', isAuthenticated, (req, res) => {
         if (err) {
           next(err);
         } else {
-          res.render('recipe', { recipe,comments });
+          res.render('recipe', { recipe, comments });
         }
       });
+    }
+  });
+});
+
+//recipe page like button
+app.post('/recipe/:id/like', isAuthenticated, (req, res) => {
+  const userId = req.user.id;
+  const recipeId = req.params.id;
+
+  // Check if the user has already liked the article
+  db.get('SELECT * FROM user_likes WHERE user_id = ? AND recipe_id = ?', [userId, recipeId], (err, existingLike) => {
+    if (err) {
+      console.error('Error checking for existing like:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    } else {
+      if (existingLike) {
+        // User has already liked, remove the like
+        db.run('DELETE FROM user_likes WHERE user_id = ? AND recipe_id = ?', [userId, recipeId], (err) => {
+          if (err) {
+            console.error('Error removing like:', err);
+            res.status(500).json({ error: 'Internal server error' });
+          } else {
+            // Get the updated number of likes
+            db.get('SELECT COUNT(*) AS likes FROM user_likes WHERE recipe_id = ?', [recipeId], (err, result) => {
+              if (err) {
+                console.error('Error getting updated likes count:', err);
+                res.status(500).json({ error: 'Internal server error' });
+              } else {
+                res.json({ likes: result.likes });
+              }
+            });
+          }
+        });
+      } else {
+        // User hasn't liked yet, add the like
+        db.run('INSERT INTO user_likes (user_id, recipe_id) VALUES (?, ?)', [userId, recipeId], (err) => {
+          if (err) {
+            console.error('Error adding like:', err);
+            res.status(500).json({ error: 'Internal server error' });
+          } else {
+            // Get the updated number of likes
+            db.get('SELECT COUNT(*) AS likes FROM user_likes WHERE recipe_id = ?', [recipeId], (err, result) => {
+              if (err) {
+                console.error('Error getting updated likes count:', err);
+                res.status(500).json({ error: 'Internal server error' });
+              } else {
+                res.json({ likes: result.likes });
+              }
+            });
+          }
+        });
+      }
     }
   });
 });
