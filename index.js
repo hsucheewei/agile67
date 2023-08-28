@@ -254,7 +254,7 @@ app.get('/recipe/:id', isAuthenticated, (req, res) => {
                   console.error('Error checking for existing like:', err);
                   res.render('error');
                 } else {
-                  const hasLiked = existingLike !== null;
+                  const hasLiked = existingLike ? 1 : 0;
                   res.render('recipe', { recipe, comments, likes: likesResult.likes, hasLiked: hasLiked });
                 }
               });

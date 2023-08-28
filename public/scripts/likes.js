@@ -3,10 +3,10 @@ const likesCount = document.getElementById("likesCount");
 const heartEmpty = document.getElementById("heartEmpty");
 const heartFilled = document.getElementById("heartFilled");
 const recipeId = likeButton.getAttribute("data-recipe-id");
-const hasLiked = likeButton.getAttribute("data-has-liked") === "true"; // Convert the string to a boolean
+const hasLiked = parseInt(likeButton.getAttribute("data-has-liked")); // Convert to a number
 
 // Initialize the heart icons based on user's like status
-if (hasLiked) {
+if (hasLiked === 1) {
   heartEmpty.style.display = "none";
   heartFilled.style.display = "inline-block";
 } else {
