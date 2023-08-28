@@ -218,35 +218,48 @@ app.get('/recipe/:id', isAuthenticated, (req, res) => {
   const userId = req.user.id; // Assuming you have user data available through req.user
 
   db.get(`
-  SELECT recipe.*, user.firstName, user.lastName, COUNT(like.likes_id) AS likes
-  FROM recipes AS recipe
-  JOIN users AS user ON recipe.user_id = user.id
-  LEFT JOIN user_likes AS like ON recipe.id = like.recipe_id AND like.user_id = ?
-  WHERE recipe.id = ?
-  GROUP BY recipe.id, user.firstName, user.lastName;
-`, [userId, recipeId], (err, recipe) => {
+    SELECT recipe.*, user.firstName, user.lastName
+    FROM recipes AS recipe
+    JOIN users AS user ON recipe.user_id = user.id
+    WHERE recipe.id = ?;
+  `, [recipeId], (err, recipe) => {
     if (err || !recipe) {
       console.error('Error fetching recipe:', err);
       res.render('error');
     } else {
-
-      // Manually split the Cleaned_Ingredients string and trim each ingredient
-      // Remove square brackets and split using single quotes as delimiters
       const cleanedIngredientsArray = recipe.Cleaned_Ingredients
-        .slice(2, -2) // Remove square brackets and ' at start and end of array
+        .slice(2, -2)
         .split("', '")
-        .map((ingredient) => ingredient.trim()); // Trim any extra spaces
+        .map((ingredient) => ingredient.trim());
 
       recipe.Cleaned_Ingredients = cleanedIngredientsArray;
-      // Split the instructions by newlines into an array
+
       const instructionsArray = recipe.Instructions.split('\n');
       recipe.Instructions = instructionsArray;
-      //get existing comments and show them on the rendered page
+
+      // Get existing comments and show them on the rendered page
       db.all('SELECT * FROM user_comments WHERE recipe_id = ? ORDER BY posted_timestamp DESC;', [recipeId], (err, comments) => {
         if (err) {
           next(err);
         } else {
-          res.render('recipe', { recipe, comments });
+          // Get the count of likes for the recipe
+          db.get('SELECT COUNT(*) AS likes FROM user_likes WHERE recipe_id = ?', [recipeId], (err, likesResult) => {
+            if (err) {
+              console.error('Error fetching likes count:', err);
+              res.render('error');
+            } else {
+              // Check if the user has already liked the recipe
+              db.get('SELECT * FROM user_likes WHERE user_id = ? AND recipe_id = ?', [userId, recipeId], (err, existingLike) => {
+                if (err) {
+                  console.error('Error checking for existing like:', err);
+                  res.render('error');
+                } else {
+                  const hasLiked = existingLike !== null;
+                  res.render('recipe', { recipe, comments, likes: likesResult.likes, hasLiked: hasLiked });
+                }
+              });
+            }
+          });
         }
       });
     }
@@ -271,13 +284,15 @@ app.post('/recipe/:id/like', isAuthenticated, (req, res) => {
             console.error('Error removing like:', err);
             res.status(500).json({ error: 'Internal server error' });
           } else {
+            //liked status
+            const hasLiked = existingLike !== null;
             // Get the updated number of likes
             db.get('SELECT COUNT(*) AS likes FROM user_likes WHERE recipe_id = ?', [recipeId], (err, result) => {
               if (err) {
                 console.error('Error getting updated likes count:', err);
                 res.status(500).json({ error: 'Internal server error' });
               } else {
-                res.json({ likes: result.likes });
+                res.json({ likes: result.likes, hasLiked: hasLiked });
               }
             });
           }

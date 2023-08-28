@@ -23,12 +23,16 @@
           </div>
           <!-- Like button -->
           
-          <div class="recipe_like_button" >
-            <button class="btn btn-transparent mt-2" id="likeButton" data-recipe-id="<%= recipe.id %>">
-              <i class="bi bi-bookmark-heart p-2" style="font-size: 1.5rem;"></i> Like
-              <span id="likesCount"><%= recipe.likes %></span> 
+          <div class="recipe_like_button">
+            <button class="btn btn-transparent mt-2" id="likeButton" data-recipe-id="<%= recipe.id %>" data-has-liked="<%= hasLiked %>">
+              <i id="heartEmpty" class="bi bi-bookmark-heart p-2" style="font-size: 1.5rem;"></i>
+              <i id="heartFilled" class="bi bi-bookmark-heart-fill p-2" style="font-size: 1.5rem; display: none;"></i>
+              Like
+              <span id="likesCount"><%= likes %></span>
             </button>
           </div>
+          
+          
           
           <!-- article content -->
           <div class="mb-4 mt-4">
