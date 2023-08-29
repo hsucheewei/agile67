@@ -237,8 +237,14 @@ app.get('/recipe/:id', isAuthenticated, (req, res) => {
       const instructionsArray = recipe.Instructions.split('\n');
       recipe.Instructions = instructionsArray;
 
-      // Get existing comments and show them on the rendered page
-      db.all('SELECT * FROM user_comments WHERE recipe_id = ? ORDER BY posted_timestamp DESC;', [recipeId], (err, comments) => {
+      // Get existing comments and associated user names
+      db.all(`
+        SELECT user_comments.*, users.firstName, users.lastName
+        FROM user_comments
+        JOIN users ON user_comments.user_id = users.id
+        WHERE user_comments.recipe_id = ?
+        ORDER BY user_comments.posted_timestamp DESC;
+      `, [recipeId], (err, comments) => {
         if (err) {
           next(err);
         } else {
@@ -323,14 +329,16 @@ app.post('/recipe/:id/like', isAuthenticated, (req, res) => {
 // insert new comment into db and refresh recipe page
 app.post('/recipe/:id/commenting', isAuthenticated, (req, res) => {
   // get user ID from the session or authentication process
-  const userId = 1; // replace with the actual user ID
-  db.run('INSERT INTO user_comments (comment_content,user_id,recipe_id) VALUES (?,?,?)', [req.body.new_comment, userId, req.params.id], (err) => {
+  const recipeId = req.params.id;//receipe id
+  const userId = req.user.id; // user ID
+  const newComment = req.body.new_comment;//new comment
+  db.run('INSERT INTO user_comments (comment_content,user_id,recipe_id) VALUES (?,?,?)', [newComment, userId, recipeId], (err) => {
       if (err) {
           console.error(err);
           return res.status(500).send('Internal Server Error');
       }
       else {
-        res.redirect('/recipe/'+req.params.id);
+        res.redirect('/recipe/'+ recipeId);
       };
   });
 });

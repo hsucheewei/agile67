@@ -34,7 +34,6 @@ CREATE TABLE IF NOT EXISTS user_comments (
     comment_content TEXT NOT NULL,
     posted_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     user_id INTEGER,
-    username TEXT,
     recipe_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (recipe_id) REFERENCES recipes(id)
