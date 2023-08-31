@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
     firstName TEXT NOT NULL,
     lastName TEXT NOT NULL,
     username TEXT NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    profile_image_Name TEXT DEFAULT NULL -- if there is no image, a null value is put in its place
 );
 
 CREATE TABLE IF NOT EXISTS user_likes (

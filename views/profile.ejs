@@ -7,10 +7,54 @@
     <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
     <div class="page-content page-no-sidebar">
       
-        
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="text-center">
+        <img src="/profileImages/<%= userProfile.Image_Name %>.png" alt="Profile Image" class="img-fluid rounded-circle profile-image">
+        <h1><%= userProfile.firstName %> <%= userProfile.lastName %></h1>
+        <p>@<%= userProfile.username %></p>
+        <button class="btn btn-primary">Edit Profile</button>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="d-flex justify-content-between mb-3">
+        <div class="stat">
+          <span>Followers</span>
+          <span><%= userProfile.followers %></span>
+        </div>
+        <div class="stat">
+          <span>Following</span>
+          <span><%= userProfile.following %></span>
+        </div>
+        <div class="stat">
+          <span>Posts</span>
+          <span><%= userProfile.posts %></span>
+        </div>
+      </div>
+      <div class="row">
+        <% for (const post of userPosts) { %>
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <img src="<%= post.Image_Name %>" alt="Post Image" class="card-img-top">
+              <div class="card-body">
+                <p class="card-text"><%= post.Title %></p>
+              </div>
+              <div class="card-footer">
+                <p>Likes: <%= post.likes %></p>
+                <p>Comments: <%= post.comments %></p>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
 
     <%- include('footer.ejs') %>
+    <div class="black-overlay"></div>
     <!-- page scripts -->
     <script src="/scripts/sidebar.js"></script>
 

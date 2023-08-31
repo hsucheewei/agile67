@@ -82,8 +82,6 @@ const registerRoute = require('./routes/register');
 const loginRoute = require('./routes/login');
 const settingsRoute = require('./routes/settings');
 
-
-
 //set the app to use ejs for rendering
 app.set('view engine', 'ejs');
 
@@ -205,11 +203,19 @@ function insertCSVData() {
 //at the same time which will cause some recipes to fail when connecting to default user)
 insertDefaultUser(insertCSVData);
 
-
+//to route recipe images to the ejs
 app.get('/images/:imageName', isAuthenticated, (req, res) => {
   const imageName = req.params.imageName;
   const imagePath = path.join(__dirname, 'datasets', 'recipeImages', imageName);
   res.sendFile(imagePath);
+});
+
+//to route profile images to the ejs
+app.get('/profileImages/:profileImageName', isAuthenticated, (req, res) => {
+  const profileImageName = req.params.profileImageName;
+  const profileImagePath = path.join(__dirname, 'datasets', 'profileImages', profileImageName);
+  console.log(profileImagePath)
+  res.sendFile(profileImagePath);
 });
 
 //if you run into an error where the local host does not connect PLEASE clean and build the db
@@ -359,6 +365,43 @@ app.get('/home', isAuthenticated, (req, res) => {
       res.render("reader-home", { recipes });
     }
   });
+});
+
+// Render profile page
+app.get('/profile', isAuthenticated, (req, res) => {
+  const userId = req.user.id;
+
+  // Fetch user profile data from the database based on the user ID
+  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, userProfile) => {
+    if (err) {
+      console.error('Error fetching user profile:', err);
+      res.render('error');
+    } else {
+      // Check if the profile image is null, if so, set it to 'default_avatar'
+      if (userProfile.profile_image_Name === null) {
+        userProfile.profile_image_Name = 'default_avatar';
+      }
+
+      // Fetch user's posts from the database based on the user ID
+      db.all('SELECT * FROM recipes WHERE user_id = ? ORDER BY id DESC', [userId], (err, userPosts) => {
+        if (err) {
+          console.error('Error fetching user posts:', err);
+          res.render('error');
+        } else {
+          // Render the profile template with fetched data
+          res.render('profile', { userProfile, userPosts });
+        }
+      });
+    }
+  });
+});
+
+
+
+
+//render create new recipe page
+app.get('/create-new-recipe', isAuthenticated, (req, res) => {
+  res.render("create-new-recipe")
 });
 
 //leaderboard 
