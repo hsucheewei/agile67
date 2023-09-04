@@ -11,7 +11,7 @@
   <div class="row">
     <div class="col-md-4">
       <div class="text-center">
-        <img src="/profileImages/<%= userProfile.Image_Name %>.png" alt="Profile Image" class="img-fluid rounded-circle profile-image">
+        <img src="profileImages/<%= userProfile.profile_image_Name %>.png" alt="Profile Image" class="img-fluid rounded-circle profile-image" width="200" height="200">
         <h1><%= userProfile.firstName %> <%= userProfile.lastName %></h1>
         <p>@<%= userProfile.username %></p>
         <button class="btn btn-primary">Edit Profile</button>
@@ -52,9 +52,9 @@
   </div>
 </div>
     </div>
-
-    <%- include('footer.ejs') %>
     <div class="black-overlay"></div>
+    <%- include('footer.ejs') %>
+    
     <!-- page scripts -->
     <script src="/scripts/sidebar.js"></script>
 

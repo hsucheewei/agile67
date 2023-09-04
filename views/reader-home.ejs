@@ -16,7 +16,7 @@
               <% }); %>
                 <div class="recipe-placeholder"></div>
         </div>
-        <%- include('footer.ejs') %>
+        
       </div>
       <div class="black-overlay"></div>
       <!-- page scripts -->
@@ -58,8 +58,8 @@
           }
 
           $(window).scroll(function () {
-            if (window.scrollY + window.innerHeight >=
-              document.documentElement.scrollHeight) {
+            //-200 is needed to deal with the network latency so that we start loading the content before we reach the bottom
+            if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 200) {
               loadMoreRecipes();
               console.log("bottom");
             }

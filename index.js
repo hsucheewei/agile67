@@ -214,7 +214,6 @@ app.get('/images/:imageName', isAuthenticated, (req, res) => {
 app.get('/profileImages/:profileImageName', isAuthenticated, (req, res) => {
   const profileImageName = req.params.profileImageName;
   const profileImagePath = path.join(__dirname, 'datasets', 'profileImages', profileImageName);
-  console.log(profileImagePath)
   res.sendFile(profileImagePath);
 });
 
@@ -354,18 +353,22 @@ app.get('/', notAuthenticated, (req, res) => {
   res.render("landing");
 });
 
+//Variable to Track Loaded Recipes
+let recipesLoadedOnHome = 0;
 
-//render home page
+// Render home page
 app.get('/home', isAuthenticated, (req, res) => {
-  db.all('SELECT id,Title,Instructions,Image_Name FROM recipes LIMIT 5;', (err, recipes) => {
+  db.all('SELECT id, Title, Instructions, Image_Name FROM recipes LIMIT 5;', (err, recipes) => {
     if (err || !recipes) {
       console.error('Error fetching recipes:', err);
       res.render('error');
     } else {
+      recipesLoadedOnHome += recipes.length; // Increment the count
       res.render("reader-home", { recipes });
     }
   });
 });
+
 
 // Render profile page
 app.get('/profile', isAuthenticated, (req, res) => {
@@ -376,12 +379,8 @@ app.get('/profile', isAuthenticated, (req, res) => {
     if (err) {
       console.error('Error fetching user profile:', err);
       res.render('error');
+      console.log(userProfile.profileImageName)
     } else {
-      // Check if the profile image is null, if so, set it to 'default_avatar'
-      if (userProfile.profile_image_Name === null) {
-        userProfile.profile_image_Name = 'default_avatar';
-      }
-
       // Fetch user's posts from the database based on the user ID
       db.all('SELECT * FROM recipes WHERE user_id = ? ORDER BY id DESC', [userId], (err, userPosts) => {
         if (err) {
@@ -416,24 +415,25 @@ app.get('/leaderboard',isAuthenticated, (req, res) => {
   });
 });
 
-// Add this route to handle infinite scrolling
-// to whoever is doing this component later, this will prob not work it will have to be done as a script added to the ejs page like the side bar
-// because you will need to add a window listner to see if the page is scrolled to the bottom using a offset, then you need to make a ajax request to load more recipes
-//and append it to the dom
+
+
+// Route to load more recipes into the reader home
 app.get('/load-more', isAuthenticated, (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = 5; // Number of recipes to load per request
-  const offset = (page - 1) * pageSize;
+  const offset = (page - 1) * pageSize + recipesLoadedOnHome;
 
   db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes LIMIT ${pageSize} OFFSET ${offset};`, (err, recipes) => {
     if (err || !recipes) {
       console.error('Error fetching more recipes:', err);
+      console.log("error fetching recipes")
       res.status(500).json({ error: 'Error fetching more recipes' });
     } else {
       res.json({ recipes });
     }
   });
 });
+
 
 
 app.get('/render-home-card', isAuthenticated, (req, res) => {
