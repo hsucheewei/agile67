@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('head.ejs') %>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body>
+  <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
+      <div class="page-content page-no-sidebar">
+        <div class="container-lg pt-4">
+          <% searchResults.forEach(function(recipe){ %>
+            <%- include('home-card.ejs', {recipe}); %>
+              <% }); %>
+                <div class="recipe-placeholder"></div>
+        </div>
+        
+      </div>
+      <div class="black-overlay"></div>
+      <!-- page scripts -->
+      <script src="/scripts/sidebar.js"></script>
+      <script>
+        $(document).ready(function () {
+          let page = 1; // Initial page number
+          const queriesContainer = $('.container-lg'); // Change this to the appropriate container for queries
+          const placeholder = $('.query-placeholder'); // Change this to the appropriate placeholder
+          let isLoading = false; // Flag to prevent multiple AJAX requests
+      
+          function loadMoreQueries() {
+            if (isLoading) {
+              return; // If a request is already in progress, don't send another
+            }
+            isLoading = true; // Set the flag to indicate that a request is in progress
+            console.log('Loading more queries...');
+      
+            $.ajax({
+              url: `/load-more-queries?page=${page}`,
+              method: 'GET',
+              success: function (data) {
+                console.log(data);
+                if (data.recipes.length > 0) {
+                  data.recipes.forEach(function (recipe) {
+                    $.get(`/render-home-card`, { recipe }, function (recipeHtml) {
+                        queriesContainer.append(recipeHtml);
+                    });
+                  });
+                  page++;
+                }
+                isLoading = false; // Reset the flag after successful request
+              },
+              error: function (error) {
+                console.log('Error loading more queries:', error);
+                isLoading = false; // Reset the flag on error as well
+              },
+            });
+          }
+      
+          $(window).scroll(function () {
+            //-200 is needed to deal with the network latency so that we start loading the content before we reach the bottom
+            if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 200) {
+              loadMoreQueries();
+              console.log("bottom");
+            }
+          });
+        });
+      </script>
+      
+</body>
+
+</html>

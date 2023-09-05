@@ -66,7 +66,7 @@ app.use(
     store: new SQLiteStore({ db: 'sessions.db', dir: __dirname }), //store session in sqlitedb using connect-sqlite3
     secret: 'secret_key',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
   })
 );
 
@@ -463,6 +463,46 @@ app.post('/likes-content/:id', isAuthenticated, (req, res) => {
           return res.status(500).send('Internal Server Error');
       }
       res.redirect('/leaderboard');
+  });
+});
+
+
+app.get('/search', isAuthenticated, (req, res) => {
+  const searchQuery = req.query.query;
+  
+  // Store the search query in a session or as a cookie
+  req.session.searchQuery = searchQuery;
+
+  // Sample SQL query (you should adapt this to your database structure):
+  db.all('SELECT * FROM recipes WHERE Title LIKE ? LIMIT 5', [`%${searchQuery}%`], (err, searchResults) => {
+    if (err) {
+      console.error('Error searching for recipes:', err);
+      res.render('error');
+    } else {
+      // Render a search results page with the matching recipes
+      res.render('search-results', { searchResults });
+    }
+  });
+});
+
+queriesLoadedOnHome = 0;
+
+// Route to load more queries
+app.get('/load-more-queries', isAuthenticated, (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 5; // Number of queries to load per request
+  const offset = (page - 1) * pageSize + queriesLoadedOnHome;
+
+  // Retrieve the search query from the session or cookie
+  const searchQuery = req.session.searchQuery || '';
+
+  db.all('SELECT id, Title, Instructions, Image_Name FROM recipes WHERE Title LIKE ? LIMIT ? OFFSET ?;', [`%${searchQuery}%`, pageSize, offset], (err, recipes) => {
+    if (err || !recipes) {
+      console.error('Error fetching more recipes queries:', err);
+      res.status(500).json({ error: 'Error fetching more recipes queries' });
+    } else {
+      res.json({ recipes });
+    }
   });
 });
 
