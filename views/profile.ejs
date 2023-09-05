@@ -7,50 +7,63 @@
     <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
     <div class="page-content page-no-sidebar">
       
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-md-4">
-      <div class="text-center">
-        <img src="profileImages/<%= userProfile.profile_image_Name %>.png" alt="Profile Image" class="img-fluid rounded-circle profile-image" width="200" height="200">
-        <h1><%= userProfile.firstName %> <%= userProfile.lastName %></h1>
-        <p>@<%= userProfile.username %></p>
-        <button class="btn btn-primary">Edit Profile</button>
-      </div>
-    </div>
-    <div class="col-md-8">
-      <div class="d-flex justify-content-between mb-3">
-        <div class="stat">
-          <span>Followers</span>
-          <span><p>N.A</p></span>
-        </div>
-        <div class="stat">
-          <span>Following</span>
-          <span><p>N.A</p></span>
-        </div>
-        <div class="stat">
-          <span>Posts</span>
-          <span><p><%= userProfile.posts %></p></span>
-        </div>
-      </div>
-      <!-- <div class="row">
-        <% for (const post of userPosts) { %>
-          <div class="col-md-4 mb-4">
-            <div class="card">
-              <img src="<%= post.Image_Name %>" alt="Post Image" class="card-img-top">
-              <div class="card-body">
-                <p class="card-text"><%= post.Title %></p>
+      <div class="container mt-4">
+        <div class="row">
+            <!-- Profile Information (left column) -->
+            <div class="col-md-4 mt-4">
+                <!-- Include profile information here -->
+                <div class="text-center">
+                  <img src="profileImages/<%= userProfile.profile_image_Name %>.png" alt="Profile Image" class="img-fluid rounded-circle profile-image" width="200" height="200">
+                  <h1><%= userProfile.firstName %> <%= userProfile.lastName %></h1>
+                  <p>@<%= userProfile.username %></p>
+                  <button class="btn btn-primary">Edit Profile</button>
+                </div>
               </div>
-              <div class="card-footer">
-                <p>Likes: <%= post.likes %></p>
-                <p>Comments: <%= post.comments %></p>
-              </div>
+              <div class="col-md-8 mt-4">
+                <!-- include profile stats here -->
+                <div class="d-flex justify-content-between mb-3">
+                  <div class="stat">
+                    <span>Followers</span>
+                    <span><p>N.A</p></span>
+                  </div>
+                  <div class="stat">
+                    <span>Following</span>
+                    <span><p>N.A</p></span>
+                  </div>
+                  <div class="stat">
+                    <span>Posts</span>
+                    <span><p><%= userProfile.posts %></p></span>
+                  </div>
+                </div>
             </div>
-          </div>
-        <% } %>
-      </div> -->
+
+            <!-- Tabs and Content (right column) -->
+            <div class="col-md-8 mt-4">
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs" id="profileTabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="myRecipesTab" data-toggle="tab" href="#myRecipes">My Recipes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="likedTab" data-toggle="tab" href="#liked">Liked</a>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="profileTabsContent">
+                    <!-- My Recipes Tab Content -->
+                    <div class="tab-pane fade show active" id="myRecipes">
+                        <!-- content for "My Recipes" tab here -->
+                    </div>
+
+                    <!-- Liked Tab Content -->
+                    <div class="tab-pane fade" id="liked">
+                        <!-- content for "Liked" tab here -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
     </div>
     <div class="black-overlay"></div>
     <%- include('footer.ejs') %>
