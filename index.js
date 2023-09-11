@@ -29,6 +29,9 @@ global.db = new sqlite3.Database('./database.db', function (err) {
 // Express middleware for parsing incoming form data
 app.use(express.urlencoded({ extended: true }));
 
+// Construct a platform-independent path to your views directory
+const viewsDir = path.join(__dirname, 'views');
+
 // Serve static assets
 app.use(express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -84,6 +87,7 @@ const settingsRoute = require('./routes/settings');
 
 //set the app to use ejs for rendering
 app.set('view engine', 'ejs');
+app.set('views', viewsDir);
 
 //this adds routes for readers
 app.use('/user', isAuthenticated, userRoutes);
