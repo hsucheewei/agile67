@@ -6,70 +6,107 @@
   <body>
     <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
     <div class="page-content page-no-sidebar">
-      
       <div class="container mt-4">
         <div class="row">
-            <!-- Profile Information (left column) -->
-            <div class="col-md-4 mt-4">
-                <!-- Include profile information here -->
-                <div class="text-center">
-                  <img src="profileImages/<%= userProfile.profile_image_Name %>.png" alt="Profile Image" class="img-fluid rounded-circle profile-image" width="200" height="200">
-                  <h1><%= userProfile.firstName %> <%= userProfile.lastName %></h1>
-                  <p>@<%= userProfile.username %></p>
-                  <button class="btn btn-primary">Edit Profile</button>
-                </div>
+          <!-- Profile Information (left column) -->
+          <div class="col-md-4 mt-4">
+            <!-- Include profile information here -->
+            <div class="text-center">
+              <img
+                src="profileImages/<%= userProfile.profile_image_Name %>.png"
+                alt="Profile Image"
+                class="img-fluid rounded-circle profile-image"
+                width="200"
+                height="200"
+              />
+              <h1><%= userProfile.firstName %> <%= userProfile.lastName %></h1>
+              <p>@<%= userProfile.username %></p>
+              <button class="btn btn-primary">Edit Profile</button>
+            </div>
+          </div>
+          <div class="col-md-8 mt-4">
+            <!-- include profile stats here -->
+            <div class="d-flex justify-content-between mb-3">
+              <div class="stat">
+                <span>Followers</span>
+                <span><p>N.A</p></span>
               </div>
-              <div class="col-md-8 mt-4">
-                <!-- include profile stats here -->
-                <div class="d-flex justify-content-between mb-3">
-                  <div class="stat">
-                    <span>Followers</span>
-                    <span><p>N.A</p></span>
-                  </div>
-                  <div class="stat">
-                    <span>Following</span>
-                    <span><p>N.A</p></span>
-                  </div>
-                  <div class="stat">
-                    <span>Posts</span>
-                    <span><p><%= userProfile.posts %></p></span>
-                  </div>
-                </div>
+              <div class="stat">
+                <span>Following</span>
+                <span><p>N.A</p></span>
+              </div>
+              <div class="stat">
+                <span>Posts</span>
+                <span><p><%= userProfile.posts %></p></span>
+              </div>
             </div>
+          </div>
 
-            <!-- Tabs and Content (right column) -->
-            <div class="col-md-8 mt-4">
-                <!-- Tab Navigation -->
-                <ul class="nav nav-tabs" id="profileTabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="myRecipesTab" data-toggle="tab" href="#myRecipes">My Recipes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="likedTab" data-toggle="tab" href="#liked">Liked</a>
-                    </li>
-                </ul>
+          <!-- Tabs and Content (right column) -->
+          <div class="col-md-8 mt-4">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" id="profileTabs">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  id="myRecipesTab"
+                  data-toggle="tab"
+                  href="#myRecipes"
+                  >My Recipes</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  id="likedTab"
+                  data-toggle="tab"
+                  href="#liked"
+                  >Liked</a
+                >
+              </li>
+            </ul>
 
-                <!-- Tab Content -->
-                <div class="tab-content" id="profileTabsContent">
-                    <!-- My Recipes Tab Content -->
-                    <div class="tab-pane fade show active" id="myRecipes">
-                        <!-- content for "My Recipes" tab here -->
-                    </div>
+            <!-- Tab Content -->
+            <div class="tab-content" id="profileTabsContent">
+              <!-- My Recipes Tab Content -->
+              <div class="tab-pane fade show active" id="myRecipes">
+                <!-- Content for "My Recipes" tab here -->
+                <% userPosts.forEach(function(recipe){ %>
+                  <!-- Render user's posts here -->
+                  <div class="user-post">
+                    <!-- Render post content -->
+                    <h2><%= recipe.Title %></h2>
+                    
+                  </div>
+                <% }) %>
+              </div>
 
-                    <!-- Liked Tab Content -->
-                    <div class="tab-pane fade" id="liked">
-                        <!-- content for "Liked" tab here -->
-                    </div>
-                </div>
+              <!-- Liked Tab Content -->
+              <div class="tab-pane fade" id="liked">
+                <!-- Content for "Liked" tab here -->
+                <% likedRecipes.forEach(function(recipe){ %>
+                  <div class="liked-recipes mt-4">
+                    <%- include('profile-card.ejs', {recipe}); %>
+                  </div>
+                <% }) %>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
+      </div>
     </div>
     <div class="black-overlay"></div>
-    <%- include('footer.ejs') %>
-    
+    <%- include('footer.ejs') %>  
     <!-- page scripts -->
     <script src="/scripts/sidebar.js"></script>
-
+    <script>
+      // JavaScript to handle tab clicks and switch tab content
+      $(document).ready(function () {
+        $('#profileTabs a').on('click', function (e) {
+          e.preventDefault();
+          $(this).tab('show');
+        });
+      });
+    </script>
   </body>
 </html>

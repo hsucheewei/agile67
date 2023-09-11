@@ -379,7 +379,6 @@ app.get('/profile', isAuthenticated, (req, res) => {
     if (err) {
       console.error('Error fetching user profile:', err);
       res.render('error');
-      console.log(userProfile.profileImageName)
     } else {
       // Fetch user's posts from the database based on the user ID
       db.all('SELECT * FROM recipes WHERE user_id = ? ORDER BY id DESC', [userId], (err, userPosts) => {
@@ -387,8 +386,21 @@ app.get('/profile', isAuthenticated, (req, res) => {
           console.error('Error fetching user posts:', err);
           res.render('error');
         } else {
-          // Render the profile template with fetched data
-          res.render('profile', { userProfile, userPosts });
+          // Fetch user's liked recipes from the database based on the user ID
+          db.all('SELECT recipes.* FROM recipes INNER JOIN user_likes ON recipes.id = user_likes.recipe_id WHERE user_likes.user_id = ?', [userId], (err, likedRecipes) => {
+            if (err) {
+              console.error('Error fetching liked recipes:', err);
+              res.status(500).json({ error: 'Error fetching liked recipes' });
+            } else {
+              // Debugging: Log the fetched data
+              // console.log('User Profile:', userProfile);
+              // console.log('User Posts:', userPosts);
+              // console.log('Liked Recipes:', likedRecipes);
+
+              // Render the profile template with fetched data
+              res.render('profile', { userProfile, userPosts, likedRecipes }); // Pass likedRecipes to the template
+            }
+          });
         }
       });
     }
@@ -396,6 +408,10 @@ app.get('/profile', isAuthenticated, (req, res) => {
 });
 
 
+app.get('/render-profile-card', isAuthenticated, (req, res) => {
+  const recipe = req.query.recipe;
+  res.render('profile-card', { recipe }); // Use the appropriate view name
+});
 
 
 //render create new recipe page
@@ -433,8 +449,6 @@ app.get('/load-more', isAuthenticated, (req, res) => {
     }
   });
 });
-
-
 
 app.get('/render-home-card', isAuthenticated, (req, res) => {
   const recipe = req.query.recipe;

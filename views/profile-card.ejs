@@ -1,0 +1,17 @@
+<article class="mb-4 rounded shadow profile-card">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <!-- Add an empty image container or remove it if not needed -->
+      <div class="image-container">
+        <img src="images/<%= recipe.Image_Name %>.jpg" class="w-100 h-100 rounded object-fit-cover" alt="Recipe Image" />
+      </div>
+    </div>
+    <div class="profile-card-info col-md-8 p-4 d-flex flex-column">
+      <h2 class="profile-card-title"><%= recipe.Title %></h2>
+      <!-- You can keep or modify other content as needed -->
+      <div class="d-flex justify-content-end mt-auto">
+        <a href="recipe/<%= recipe.id %>" role="button" class="d-inline-block btn btn-primary mt-3">More...</a>
+      </div>
+    </div>
+  </div>
+</article>
