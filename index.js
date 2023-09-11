@@ -538,18 +538,18 @@ app.get('/settings', isAuthenticated, (req, res) => {
 // Handle the form submission to update the blog settings
 app.post('/update-blog-settings', isAuthenticated, (req, res, next) => {
   // Get values from the request body
-  const { firstName, lastName, username } = req.body;
+  const { firstName, lastName, username, bio } = req.body;
   const userId = req.user.id;
 
   // Use the obtained values in the database update query
   global.db.run(
-    'UPDATE users SET firstName = ?, lastName = ?, username = ? WHERE id = ?',
-    [firstName, lastName, username, userId],
+    'UPDATE users SET firstName = ?, lastName = ?, username = ?, bio = ? WHERE id = ?',
+    [firstName, lastName, username, bio, userId],
     function (err) {
       if (err) {
         next(err);
       } else {
-        res.redirect('/settings'); // Send a success response
+        res.redirect('/settings');
       }
     }
   );

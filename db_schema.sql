@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
     firstName TEXT NOT NULL,
     lastName TEXT NOT NULL,
     username TEXT NOT NULL,
+    bio TEXT,
     password TEXT NOT NULL,
     profile_image_Name TEXT DEFAULT 'default_avatar',
     posts INTEGER DEFAULT 0
