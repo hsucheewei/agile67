@@ -1,67 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <%- include('head.ejs') %>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
+
 <body>
   <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
-  <div class="page-content page-no-sidebar">
-    <div class="container-lg pt-4" id="liked-recipes-container">
-      <% recipes.forEach(function(recipe){ %>
-        <%- include('home-card.ejs', {recipe}); %>
-      <% }); %>
-      <div class="recipe-placeholder"></div>
-    </div>
-  </div>
-  <div class="black-overlay"></div>
-  <!-- page scripts -->
-  <script src="/scripts/sidebar.js"></script>
-  <script>
-    // JavaScript to handle tab clicks and fetch liked recipes
-    $(document).ready(function () {
-      // Function to load liked recipes and update the page content
-      function loadLikedRecipes() {
-        $.ajax({
-          url: '/profile/liked',
-          method: 'GET',
-          success: function (data) {
-            // Handle the data, e.g., update the page with liked recipes
-            console.log(data.likedRecipes); // This will contain the liked recipes
+      <div class="page-content page-no-sidebar">
+        <div class="container-lg pt-4">
+          <% recipes.forEach(function(recipe){ %>
+            <%- include('home-card.ejs', {recipe}); %>
+              <% }); %>
+                <div class="recipe-placeholder"></div>
+        </div>
+        
+      </div>
+      <div class="black-overlay"></div>
+      <!-- page scripts -->
+      <script src="/scripts/sidebar.js"></script>
+      <script>
+        $(document).ready(function () {
+          let page = 1; // Initial page number
+          const recipesContainer = $('.container-lg');
+          const placeholder = $('.recipe-placeholder');
+          let isLoading = false; // Flag to prevent multiple AJAX requests
 
-            // container to display the liked recipes, update its content
-            var likedRecipesContainer = $('#liked-recipes-container');
+          function loadMoreRecipes() {
+            if (isLoading) {
+              return; // If a request is already in progress, don't send another
+            }
+            isLoading = true; // Set the flag to indicate that a request is in progress
+            console.log('Loading more recipes...');
 
-            // Clear the existing content
-            likedRecipesContainer.empty();
-
-            // Iterate through the liked recipes and append them to the container
-            data.likedRecipes.forEach(function (recipe) {
-              // Load the recipe card HTML from the server
-              $.get(`/render-profile-card`, { recipe }, function (recipeHtml) {
-                // Append the loaded HTML to the container
-                likedRecipesContainer.append(recipeHtml);
-              });
+            $.ajax({
+              url: `/load-more?page=${page}`,
+              method: 'GET',
+              success: function (data) {
+                console.log(data);
+                if (data.recipes.length > 0) {
+                  data.recipes.forEach(function (recipe) {
+                    $.get(`/render-home-card`, { recipe }, function (recipeHtml) {
+                      recipesContainer.append(recipeHtml);
+                    });
+                  });
+                  page++;
+                }
+                isLoading = false; // Reset the flag after successful request
+              },
+              error: function (error) {
+                console.log('Error loading more recipes:', error);
+                isLoading = false; // Reset the flag on error as well
+              },
             });
-          },
-          error: function (error) {
-            console.log('Error loading liked recipes:', error);
-          },
+          }
+
+          $(window).scroll(function () {
+            //-200 is needed to deal with the network latency so that we start loading the content before we reach the bottom
+            if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 200) {
+              loadMoreRecipes();
+              console.log("bottom");
+            }
+          });
         });
-      }
-
-      // Check the fragment identifier on page load
-      if (window.location.hash === '#liked') {
-        loadLikedRecipes();
-      }
-
-      // Listen for changes to the fragment identifier
-      $(window).on('hashchange', function () {
-        if (window.location.hash === '#liked') {
-          loadLikedRecipes();
-        }
-      });
-    });
-  </script>
+      </script>
 </body>
+
 </html>
