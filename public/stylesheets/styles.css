@@ -9,7 +9,6 @@
   margin-top: 85px;
   background-color: white;
   max-width: 100%;
-  margin-bottom: 20px;
 }
 
 .page-no-sidebar {
@@ -200,10 +199,26 @@ button.bg-primary:focus {
   color: white;
 }
 
-#myRecipesBtn:hover {
-  background-color: rgb(237, 236, 236);
+/* TikTok Card Styles */
+.profile-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
 }
 
-#likedRecipesBtn:hover {
-  background-color: rgb(237, 236, 236);
+.profile-card-title {
+  background-color: #000; /* Background color for the title */
+  color: white; /* Text color for the title */
+  padding: 8px 16px; /* Adjust padding as needed */
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
 }
+
+/* Optional: You can add styles for the image container */
+/* .image-container {
+  /* Add your styles for the image container here */
+/* } */

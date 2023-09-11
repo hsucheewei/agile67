@@ -1,89 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <%- include('head.ejs') %>
+  </head>
 
-<head>
-  <%- include('head.ejs') %>
-</head>
+  <body>
+    <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
 
-<body>
-  <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
-
-      <div class="page-content page-no-sidebar m-4">
-        <article>
-          <div class="row">
-            <div class="d-flex align-items-center justify-content-between mt-5">
-              <h1>
-                <%= recipe.Title %>
-              </h1>
-              <!-- Like button -->
-              <button class="btn btn-primary">Like</button>
-            </div>
-            <div class="col-md-4">
-              <img class="img-fluid" src="/images/<%= recipe.Image_Name %>.jpg" " alt=" <%=recipe.Title %>" />
-            </div>
-            <!-- <div class="col-md-8">
-              <h2>Description</h2>
-              <p class="lead">
-                <%= recipe.Instructions %>
-              </p>
-
-            </div> -->
+    <div class="page-content page-no-sidebar m-5">
+      <article>
+        <div class="row">
+          <div class="d-flex align-items-center justify-content-between mt-5">
+            <h1><%= recipe.Title %></h1>
           </div>
-
-          <div class="mb-4 mt-4">
-            <div class="row">
-              <!-- Ingredients Column -->
-              <div class="col-md-6">
-                <h3>Ingredients</h3>
-                <ol class="list-group">
-                  <% recipe.Cleaned_Ingredients.forEach(function (ingredient) { %>
-                    <li class="list-group-item">
-                      <%= ingredient %>
-                    </li>
-                    <% }); %>
-                </ol>
-              </div>
-
-              <!-- Instructions Column -->
-              <div class="col-md-6">
-                <h3>Instructions</h3>
-                <ol class="list-group">
-                  <% recipe.Instructions.forEach(function (instruction) { %>
-                    <li class="list-group-item">
-                      <%= instruction %>
-                    </li>
-                    <% }); %>
-                </ol>
-              </div>
-            </div>
+          <p>By <%= recipe.firstName %> <%= recipe.lastName %></p>
+          <div class="col-md-4">
+            <img class="img-fluid" src="/images/<%= recipe.Image_Name %>.jpg" "
+            alt=" <%=recipe.Title %>" />
           </div>
-        </article>
-
-        <!-- Comments section -->
-        <div class="mt-4 mb-4">
-          <h2>Comments</h2>
-          <div class="comments">
-            <!-- Add comments here -->
-          </div>
-
-          <!-- Submit comment form -->
-          <form>
-            <div class="mb-3">
-              <label for="comment">Add a comment:</label>
-              <textarea class="form-control h-100" id="comment" rows="3"></textarea>
-            </div>
-            <div class="d-flex justify-content-between">
-              <div></div>
-              <!-- Empty div to push the button to the right -->
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-          </form>
         </div>
+        
+        <!-- article interactions panel -->
+        <div class="article_interteractions  d-flex align-items-start justify-content-start mt-2">
+          <!-- Like button -->
+          <div class="recipe_like_button">
+            <button
+              class="btn btn-borderless no-outline pb-2"
+              id="likeButton"
+              data-recipe-id="<%= recipe.id %>"
+              data-has-liked="<%= hasLiked %>"
+            >
+              <i
+                id="heartEmpty"
+                class="bi bi-bookmark-heart"
+                style="font-size: 1.5rem"
+              ></i>
+              <i
+                id="heartFilled"
+                class="bi bi-bookmark-heart-fill"
+                style="font-size: 1.5rem; display: none"
+              ></i>
+              Like
+              <span id="likesCount"><%= likes %></span>
+            </button>
+          </div>
+          <!-- comment anchor -->
+          <div class="comment_anchor">
+            <a class="btn btn-borderless no-outline " style="display: inline-block;" href="#commentSection">
+              <i class="bi bi-chat-right-text pr-3" style="font-size: 1.5rem;"></i>  Make a comment
+            </a>
+          </div>
+        </div>
+        
+
+        <!-- article content -->
+        <div class="mb-4 mt-2">
+          <div class="row">
+            <!-- Ingredients Column -->
+            <div class="col-md-6">
+              <h3>Ingredients</h3>
+              <ol class="list-group">
+                <% recipe.Cleaned_Ingredients.forEach(function (ingredient) { %>
+                <li class="list-group-item"><%= ingredient %></li>
+                <% }); %>
+              </ol>
+            </div>
+
+            <!-- Instructions Column -->
+            <div class="col-md-6">
+              <h3>Instructions</h3>
+              <ol class="list-group">
+                <% recipe.Instructions.forEach(function (instruction) { %>
+                <li class="list-group-item"><%= instruction %></li>
+                <% }); %>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Comments section -->
+      <div class="mt-4 mb-4" id="commentSection">
+        <h2>Comments</h2>
+        <div class="comments">
+          <!-- Add comments here -->
+        </div>
+
+        <!-- Submit comment form -->
+        <form method="POST" action="/recipe/<%= recipe.id %>/commenting" id="commentForm">
+          <div class="mb-3">
+            <label for="comment">Add a comment:</label>
+            <textarea
+              class="form-control h-100 mt-2"
+              id="comment"
+              rows="3"
+              name="new_comment"
+              type="text"
+              style="border: solid rgb(97, 135, 110) 2px"
+            ></textarea>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div></div>
+            <!-- Empty div to push the button to the right -->
+            <button type="submit" class="btn btn-primary">Make a comment</button>
+          </div>
+        </form>
+        <!-- Posted comments -->
+        <% comments.forEach(function(comment){ %>
+        <div class="bg-light block p-4 mb-4 mt-2">
+          <% comment.comment_content.split("\n").forEach(function(p){ %>
+          <p class="mb-6"><%= p %></p>
+          <% }) %>
+          <span
+            ><sub
+              ><b>Posted: </b><date><%= comment.posted_timestamp %></date></sub
+            ></span
+          >
+          <span
+            ><sub
+              ><b>By: </b><date><%= comment.firstName %> <%= comment.lastName %></date></sub
+            ></span
+          >
+        </div>
+        <% }) %>
       </div>
+    </div>
 
-      <%- include('footer.ejs') %>
-
-        <script src="/scripts/sidebar.js"></script>
-</body>
-
+    <%- include('footer.ejs') %>
+    <div class="black-overlay"></div>
+    <script src="/scripts/likes.js"></script>
+    <script src="/scripts/comments.js"></script>
+    <script src="/scripts/sidebar.js"></script>
+  </body>
 </html>

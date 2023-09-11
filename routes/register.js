@@ -5,7 +5,10 @@ const assert = require("assert");
 
 // Register route
 router.get("/", function (req, res) {
-  res.render("register"); // Assuming you have a register.ejs file in the views folder
+  const registrationError = req.session.registrationError;
+  req.session.registrationError = null; // Clear the error message after retrieving
+  
+  res.render("register", { registrationError }); // return register page and message
 });
 
 //Register form submission
@@ -19,17 +22,20 @@ router.post("/", function (req, res) {
     function (err, user) {
       if (err) {
         console.error(err);
-        return res.status(500).send("Internal Server Error");
+        req.session.registrationError = "An internal error occurred. Please try again later.";
+        return res.redirect("/register");
       }
 
       if (user) {
-        return res.status(409).send("Username already exists. Please choose a different username.");
+        req.session.registrationError = "Username already exists. Please choose a different username.";
+        return res.redirect("/register");
       } else {
         // If not taken, hash the password before storing in the database
         bcrypt.hash(password, 10, function (err, hashedPassword) {
           if (err) {
             console.error(err);
-            return res.status(500).send("Internal Server Error");
+            req.session.registrationError = "An internal error occurred. Please try again later.";
+            return res.redirect("/register");
           }
 
           // Insert the new user information into the database
@@ -39,7 +45,8 @@ router.post("/", function (req, res) {
             function (err) {
               if (err) {
                 console.error(err);
-                return res.status(500).send("Internal Server Error");
+                req.session.registrationError = "An internal error occurred. Please try again later.";
+                return res.redirect("/register");
               }
 
               // Redirect to the login page after successful registration

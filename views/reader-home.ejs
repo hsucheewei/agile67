@@ -1,20 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('head.ejs') %>
-  </head>
-  <body>
-    <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
-    <div class="page-content page-no-sidebar">
-      <div class="container-lg pt-4">
-        <% recipes.forEach(function(recipe){ %>
-          <%- include('home-card.ejs', {recipe}); %> 
-        <% }); %>
-      </div>
-      <%- include('footer.ejs') %>
+<head>
+  <%- include('head.ejs') %>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
+  <div class="page-content page-no-sidebar">
+    <div class="container-lg pt-4" id="liked-recipes-container">
+      <% recipes.forEach(function(recipe){ %>
+        <%- include('home-card.ejs', {recipe}); %>
+      <% }); %>
+      <div class="recipe-placeholder"></div>
     </div>
-    <div class="black-overlay"></div>
-    <!-- page scripts -->
-    <script src="/scripts/sidebar.js"></script>
-  </body>
+  </div>
+  <div class="black-overlay"></div>
+  <!-- page scripts -->
+  <script src="/scripts/sidebar.js"></script>
+  <script>
+    // JavaScript to handle tab clicks and fetch liked recipes
+    $(document).ready(function () {
+      // Function to load liked recipes and update the page content
+      function loadLikedRecipes() {
+        $.ajax({
+          url: '/profile/liked',
+          method: 'GET',
+          success: function (data) {
+            // Handle the data, e.g., update the page with liked recipes
+            console.log(data.likedRecipes); // This will contain the liked recipes
+
+            // container to display the liked recipes, update its content
+            var likedRecipesContainer = $('#liked-recipes-container');
+
+            // Clear the existing content
+            likedRecipesContainer.empty();
+
+            // Iterate through the liked recipes and append them to the container
+            data.likedRecipes.forEach(function (recipe) {
+              // Load the recipe card HTML from the server
+              $.get(`/render-profile-card`, { recipe }, function (recipeHtml) {
+                // Append the loaded HTML to the container
+                likedRecipesContainer.append(recipeHtml);
+              });
+            });
+          },
+          error: function (error) {
+            console.log('Error loading liked recipes:', error);
+          },
+        });
+      }
+
+      // Check the fragment identifier on page load
+      if (window.location.hash === '#liked') {
+        loadLikedRecipes();
+      }
+
+      // Listen for changes to the fragment identifier
+      $(window).on('hashchange', function () {
+        if (window.location.hash === '#liked') {
+          loadLikedRecipes();
+        }
+      });
+    });
+  </script>
+</body>
 </html>

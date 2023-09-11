@@ -4,28 +4,19 @@
     <%- include('head.ejs') %>
   </head>
 
-  <body>
-    <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
-    <div class="page-content page-no-sidebar">
-      <div class="container mt-5">
-        <div class="row justify-content-start">
-          <div class="col-md-6">
-            <h2 class="mb-4">Account Settings</h2>
-            <div class="text-start">
-              <i class="bi bi-person-circle" style="font-size: 5rem"></i>
-            </div>
-            <div class="text-start mt-2">
-              <button class="btn btn-primary">Change Profile Picture</button>
-            </div>
-            <form class="mt-4">
-              <div class="mb-3">
-                <label for="displayName" class="form-label">First Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="displayName"
-                  placeholder="Enter your First Name"
-                />
+<head>
+  <%- include('head.ejs') %>
+</head>
+
+<body>
+  <%- include('navigation.ejs') %> <%- include('sidebar.ejs') %>
+      <div class="page-content page-no-sidebar">
+        <div class="container mt-5 mb-3">
+          <div class="row justify-content-start">
+            <div class="col-md-6">
+              <h2 class="mb-4">Account Settings</h2>
+              <div class="text-start">
+                <i class="bi bi-person-circle" style="font-size: 5rem;"></i>
               </div>
               <div class="mb-3">
                 <label for="displayName" class="form-label">Last Name</label>

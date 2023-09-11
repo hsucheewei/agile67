@@ -69,7 +69,9 @@
               required
             />
           </div>
-          
+          <% if (registrationError) { %>
+            <p class="error-message" style="color: red;"><%= registrationError %></p>
+          <% } %>
           <div class="text-center text-lg-start mt-2 pt-2 register-button" style="display: flex; flex-direction: column; align-items: center;">
             <button
               type="submit"
@@ -86,5 +88,6 @@
       </div>
     </div>
     <%- include('footer.ejs') %>
+    
   </body>
 </html>

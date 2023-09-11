@@ -20,12 +20,15 @@
             />
           </a>
         </div>
+
         <div
-          class="col col-md-6 col-lg-5 d-none d-md-flex align-items-center justify-content-center"
+          class="searchBar col col-md-6 col-lg-5 d-none d-md-flex align-items-center justify-content-center"
         >
-          <div class="input-group col-10" style="width: 90%">
+        <form action="/search" method="GET" style="width: 90%">
+          <div class="input-group col-10" >
             <input
               type="text"
+              name="query" 
               class="form-control border-2 rounded-pill rounded-end"
               placeholder="Search"
               aria-label="Search"
@@ -38,6 +41,7 @@
             />
             <div class="input-group-append">
               <button
+                type="submit" 
                 class="input-group-text rounded-pill rounded-start border-2 h-100"
                 id="search-addon"
                 style="
@@ -48,10 +52,13 @@
                   padding-right: -8px;
                 "
               >
-              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
               </button>
             </div>
           </div>
+        </form>
+        
+
         </div>
 
         <ul class="nav col-md-auto d-flex align-items-center">
