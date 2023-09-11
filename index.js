@@ -95,15 +95,13 @@ app.use('/user', isAuthenticated, userRoutes);
 // app.use('/reader', isAuthenticated, readerRoutes);
 
 // unauthenticated users access landing routes
-app.use('/landing',notAuthenticated, landingRoutes);
+app.use('/landing', notAuthenticated, landingRoutes);
 
 // this adds routes for user registration
-app.use('/register',notAuthenticated, registerRoute);
+app.use('/register', notAuthenticated, registerRoute);
 
 // Add the login route to the app
-app.use('/login',notAuthenticated, loginRoute);
-
-app.use('/settings', isAuthenticated, settingsRoute);
+app.use('/login', notAuthenticated, loginRoute);
 
 // Generating a password for epicurious (default user for CSV injections into the table)
 // Password for the default user stored into a variable for db insertion
@@ -147,7 +145,7 @@ function insertDefaultUser(callback) {
                 }
                 callback(); // Call the callback function to proceed with the next step
 
-                
+
               });
             }
           });
@@ -195,7 +193,7 @@ function insertCSVData() {
             .on('end', () => {
               console.log('Data inserted from CSV into the database');
               console.log('The application is ready for launch.');
-             
+
             });
         }
       });
@@ -342,13 +340,13 @@ app.post('/recipe/:id/commenting', isAuthenticated, (req, res) => {
   const userId = req.user.id; // user ID
   const newComment = req.body.new_comment;//new comment
   db.run('INSERT INTO user_comments (comment_content,user_id,recipe_id) VALUES (?,?,?)', [newComment, userId, recipeId], (err) => {
-      if (err) {
-          console.error(err);
-          return res.status(500).send('Internal Server Error');
-      }
-      else {
-        res.redirect('/recipe/'+ recipeId);
-      };
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Internal Server Error');
+    }
+    else {
+      res.redirect('/recipe/' + recipeId);
+    };
   });
 });
 
@@ -424,7 +422,7 @@ app.get('/create-new-recipe', isAuthenticated, (req, res) => {
 });
 
 //leaderboard 
-app.get('/leaderboard',isAuthenticated, (req, res) => {
+app.get('/leaderboard', isAuthenticated, (req, res) => {
   db.all('SELECT id,Title,Image_Name FROM recipes LIMIT 10 OFFSET 20;', (err, recipes) => {
     if (err || !recipes) {
       console.error('Error fetching recipes:', err);
@@ -462,12 +460,12 @@ app.get('/render-home-card', isAuthenticated, (req, res) => {
 //likes db
 app.get('/leaderboard', isAuthenticated, (req, res) => {
   db.all('SELECT recipes.*, COUNT(user_likes.id) AS likes_count FROM recipes LEFT JOIN user_likes ON recipes.id = user_likes.recipe_id GROUP BY recipes.id', (err, recipes) => {
-      if (err) {
-          console.error(err);
-          return res.status(500).send('Internal Server Error');
-      }
-      res.render('leaderboard', { recipes });
-  });s
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Internal Server Error');
+    }
+    res.render('leaderboard', { recipes });
+  }); s
 });
 
 app.post('/likes-content/:id', isAuthenticated, (req, res) => {
@@ -476,18 +474,18 @@ app.post('/likes-content/:id', isAuthenticated, (req, res) => {
   const userId = 1; // replace with the actual user ID
 
   db.run('INSERT INTO user_likes (user_id, recipe_id) VALUES (?, ?)', [userId, recipeId], (err) => {
-      if (err) {
-          console.error(err);
-          return res.status(500).send('Internal Server Error');
-      }
-      res.redirect('/leaderboard');
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Internal Server Error');
+    }
+    res.redirect('/leaderboard');
   });
 });
 
 
 app.get('/search', isAuthenticated, (req, res) => {
   const searchQuery = req.query.query;
-  
+
   // Store the search query in a session or as a cookie
   req.session.searchQuery = searchQuery;
 
@@ -524,6 +522,38 @@ app.get('/load-more-queries', isAuthenticated, (req, res) => {
   });
 });
 
+//Render settings page
+app.get('/settings', isAuthenticated, (req, res) => {
+  const userId = req.user.id;
+  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, userProfile) => {
+    if (err) {
+      console.error('Error fetching user profile:', err);
+      res.render('error');
+    } else {
+      res.render('settings', { userProfile }); // Pass the userProfile data to the template
+    }
+  });
+});
+
+// Handle the form submission to update the blog settings
+app.post('/update-blog-settings', isAuthenticated, (req, res, next) => {
+  // Get values from the request body
+  const { firstName, lastName, username } = req.body;
+  const userId = req.user.id;
+
+  // Use the obtained values in the database update query
+  global.db.run(
+    'UPDATE users SET firstName = ?, lastName = ?, username = ? WHERE id = ?',
+    [firstName, lastName, username, userId],
+    function (err) {
+      if (err) {
+        next(err);
+      } else {
+        res.redirect('/settings'); // Send a success response
+      }
+    }
+  );
+});
 
 
 // Start the server

@@ -18,13 +18,38 @@
               <div class="text-start">
                 <i class="bi bi-person-circle" style="font-size: 5rem;"></i>
               </div>
+              <form method="POST" action="/update-blog-settings">
               <div class="mb-3">
-                <label for="displayName" class="form-label">Last Name</label>
+                <label for="firstName" class="form-label">First Name</label>
                 <input
                   type="text"
                   class="form-control"
-                  id="displayName"
+                  id="firstName"
+                  placeholder="Enter your First Name"
+                  value="<%= userProfile.firstName %>"
+                  name="firstName"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastName"
                   placeholder="Enter your Last Name"
+                  value="<%= userProfile.lastName %>"
+                  name="lastName"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  placeholder="Enter your Username"
+                  value="<%= userProfile.username %>"
+                  name="username"
                 />
               </div>
               <div class="mb-3">
