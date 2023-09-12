@@ -43,7 +43,7 @@
           </div>
 
           <!-- Tabs and Content (right column) -->
-          <div class="col-md-8 mt-4">
+          <div class="col-md-12 mt-4">
             <!-- Tab Navigation -->
             <ul class="nav nav-tabs" id="profileTabs">
               <li class="nav-item">
@@ -66,28 +66,42 @@
               </li>
             </ul>
 
-            <!-- Tab Content -->
-            <div class="tab-content" id="profileTabsContent">
-              <!-- My Recipes Tab Content -->
-              <div class="tab-pane fade show active" id="myRecipes">
-                <!-- Content for "My Recipes" tab here -->
-                <% userPosts.forEach(function(recipe){ %>
-                <!-- Render user's posts here -->
-                <div class="user-post">
-                  <!-- Render post content -->
-                  <h2><%= recipe.Title %></h2>
+            <div class="col-md-12 mt-4">
+              <!-- Tab Content -->
+              <div class="tab-content" id="profileTabsContent">
+                <!-- My Recipes Tab Content -->
+                <div class="tab-pane fade show active" id="myRecipes">
+                  <!-- Content for "My Recipes" tab here -->
+                  <div class="row">
+                    <% userPosts.forEach(function(recipe){ %>
+                      <!-- Render user's posts here -->
+                      <div class="col-md-3">
+                        <div class="user-recipes">
+                          <!-- Render liked recipe content using a partial template -->
+                          <%- include('profile-card.ejs', {recipe}); %>
+                        </div>
+                      </div>
+                      <% }) %>
+                  </div>
+                  
                 </div>
-                <% }) %>
-              </div>
 
-              <!-- Liked Tab Content -->
-              <div class="tab-pane fade" id="liked">
-                <!-- Content for "Liked" tab here -->
-                <% likedRecipes.forEach(function(recipe){ %>
-                <div class="liked-recipes mt-4">
-                  <%- include('profile-card.ejs', {recipe}); %>
+                <!-- Liked Tab Content -->
+                <div class="tab-pane fade" id="liked">
+                  <!-- Content for "Liked" tab here -->
+                  <div class="row">
+                    <% likedRecipes.forEach(function(recipe){ %>
+                    <div class="col-md-3">
+                      <div class="liked-recipe">
+                        <div class="card-deck">
+                          <!-- Render liked recipe content using a partial template -->
+                          <%- include('profile-card.ejs', {recipe}); %>
+                        </div>
+                      </div>
+                    </div>
+                    <% }) %>
+                  </div>
                 </div>
-                <% }) %>
               </div>
             </div>
           </div>

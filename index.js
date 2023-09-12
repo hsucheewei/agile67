@@ -382,14 +382,14 @@ app.get('/profile', isAuthenticated, (req, res) => {
       console.error('Error fetching user profile:', err);
       res.render('error');
     } else {
-      // Fetch user's posts from the database based on the user ID
-      db.all('SELECT * FROM recipes WHERE user_id = ? ORDER BY id DESC', [userId], (err, userPosts) => {
+      // Fetch user's posts from the database based on the user ID (limited to 24)
+      db.all('SELECT * FROM recipes WHERE user_id = ? ORDER BY id DESC LIMIT 24', [userId], (err, userPosts) => {
         if (err) {
           console.error('Error fetching user posts:', err);
           res.render('error');
         } else {
-          // Fetch user's liked recipes from the database based on the user ID
-          db.all('SELECT recipes.* FROM recipes INNER JOIN user_likes ON recipes.id = user_likes.recipe_id WHERE user_likes.user_id = ?', [userId], (err, likedRecipes) => {
+          // Fetch user's liked recipes from the database based on the user ID (limited to 24)
+          db.all('SELECT recipes.* FROM recipes INNER JOIN user_likes ON recipes.id = user_likes.recipe_id WHERE user_likes.user_id = ? LIMIT 24', [userId], (err, likedRecipes) => {
             if (err) {
               console.error('Error fetching liked recipes:', err);
               res.status(500).json({ error: 'Error fetching liked recipes' });
@@ -408,6 +408,7 @@ app.get('/profile', isAuthenticated, (req, res) => {
     }
   });
 });
+
 
 
 app.get('/render-profile-card', isAuthenticated, (req, res) => {
