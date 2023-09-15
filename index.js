@@ -386,32 +386,118 @@ function getRecipeRecommendations(userId, callback) {
   });
 }
 
-// Create a global array to store loaded recipe IDs
-const loadedRecipeIds = [];
+// Create an object to store loaded recipes based on recipe.id
+const loadedRecipeIds = {};
 
-// Function to add loaded recipe IDs to the global array
+// Function to add loaded recipe IDs to the object
 function addLoadedRecipeIds(recipes) {
   recipes.forEach((recipe) => {
-    loadedRecipeIds.push(recipe.id);
+    loadedRecipeIds[recipe.id] = true;
   });
 }
 
+
+
 // Render home page
 app.get('/home', isAuthenticated, (req, res) => {
-  // Fetch initial recipes (the same as your existing code)
-  db.all('SELECT id, Title, Instructions, Image_Name FROM recipes LIMIT 5;', (err, recipes) => {
+  const limit = 5; // Number of recipes to load initially
+  db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes LIMIT ?;`, [limit], (err, recipes) => {
     if (err || !recipes) {
-      console.error('Error fetching recipes:', err);
-      res.render('error');
+      console.error('Error fetching more recipes:', err);
+      res.status(500).json({ error: 'Error fetching more recipes' });
     } else {
-      // Add the initially loaded recipe IDs to the global array
-      addLoadedRecipeIds(recipes);
+      // Filter out any duplicate recipe IDs
+      const uniqueRecipes = recipes.filter((recipe) => !loadedRecipeIds[recipe.id]);
 
-      // Render the home page with the initial recipes
-      res.render('reader-home', { recipes });
+      // Function to fetch more unique recipes
+      function fetchMoreUniqueRecipes(neededCount, loadedRecipes) {
+        db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes WHERE id NOT IN (${Object.keys(loadedRecipeIds).join(',')}) LIMIT ?;`, [neededCount], (err, additionalRecipes) => {
+          if (err || !additionalRecipes) {
+            console.error('Error fetching additional recipes:', err);
+            res.status(500).json({ error: 'Error fetching additional recipes' });
+          } else {
+            // Add the loaded unique recipe IDs to the global object
+            additionalRecipes.forEach((recipe) => {
+              loadedRecipeIds[recipe.id] = true;
+            });
+
+            // Concatenate the additional recipes with the initially loaded unique recipes
+            const allUniqueRecipes = loadedRecipes.concat(additionalRecipes);
+
+            // Render the home page with all unique recipes
+            res.render('reader-home', { recipes: allUniqueRecipes });
+          }
+        });
+      }
+
+      if (uniqueRecipes.length < limit) {
+        // If there are not enough unique recipes, fetch more
+        fetchMoreUniqueRecipes(limit - uniqueRecipes.length, uniqueRecipes);
+      } else {
+        // Add the initially loaded unique recipe IDs to the global array
+        addLoadedRecipeIds(uniqueRecipes);
+
+        // Render the home page with the initial unique recipes
+        res.render('reader-home', { recipes: uniqueRecipes });
+      }
     }
   });
 });
+
+
+
+// Route to load more recipes into the reader home
+app.get('/load-more', isAuthenticated, (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 5; // Number of recipes to load per request
+  const offset = (page - 1) * pageSize;
+
+  // Fetch more recipes from the database
+  db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes LIMIT ${pageSize} OFFSET ${offset};`, (err, recipes) => {
+    if (err || !recipes) {
+      console.error('Error fetching more recipes:', err);
+      console.log("Error fetching recipes");
+      res.status(500).json({ error: 'Error fetching more recipes' });
+    } else {
+      // Filter out any duplicate recipe IDs
+      const uniqueRecipes = recipes.filter((recipe) => !loadedRecipeIds[recipe.id]);
+
+      // Calculate how many more unique recipes are needed to reach 5
+      const neededUniqueRecipesCount = 5 - uniqueRecipes.length;
+
+      if (neededUniqueRecipesCount > 0) {
+        // Fetch additional unique recipes to make up the count
+        db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes WHERE id NOT IN (${Object.keys(loadedRecipeIds).join(',')}) LIMIT ${neededUniqueRecipesCount};`, (err, additionalRecipes) => {
+          if (err || !additionalRecipes) {
+            console.error('Error fetching additional recipes:', err);
+            res.status(500).json({ error: 'Error fetching additional recipes' });
+          } else {
+            // Add the loaded unique recipe IDs to the global object
+            additionalRecipes.forEach((recipe) => {
+              loadedRecipeIds[recipe.id] = true;
+            });
+
+            // Concatenate the additional recipes with the unique recipes
+            const allUniqueRecipes = uniqueRecipes.concat(additionalRecipes);
+
+            // Send the unique recipes as the response
+            res.json({ recipes: allUniqueRecipes });
+          }
+        });
+      } else {
+        // Add the loaded unique recipe IDs to the global object
+        uniqueRecipes.forEach((recipe) => {
+          loadedRecipeIds[recipe.id] = true;
+        });
+
+        // Send the unique recipes as the response
+        res.json({ recipes: uniqueRecipes });
+      }
+    }
+  });
+});
+
+
 
 
 // Render profile page
@@ -478,52 +564,6 @@ app.get('/leaderboard', isAuthenticated, (req, res) => {
 
 
 
-// Route to load more recipes into the reader home
-app.get('/load-more', isAuthenticated, (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const pageSize = 5; // Number of recipes to load per request
-  const offset = (page - 1) * pageSize;
-
-  // Fetch more recipes from the database
-  db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes LIMIT ${pageSize} OFFSET ${offset};`, (err, recipes) => {
-    if (err || !recipes) {
-      console.error('Error fetching more recipes:', err);
-      console.log("Error fetching recipes");
-      res.status(500).json({ error: 'Error fetching more recipes' });
-    } else {
-      // Filter out any duplicate recipe IDs
-      const uniqueRecipes = recipes.filter((recipe) => !loadedRecipeIds.includes(recipe.id));
-
-      // Calculate how many more unique recipes are needed to reach 5
-      const neededUniqueRecipesCount = 5 - uniqueRecipes.length;
-
-      if (neededUniqueRecipesCount > 0) {
-        // Fetch additional unique recipes to make up the count
-        db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes WHERE id NOT IN (${loadedRecipeIds.join(',')}) LIMIT ${neededUniqueRecipesCount};`, (err, additionalRecipes) => {
-          if (err || !additionalRecipes) {
-            console.error('Error fetching additional recipes:', err);
-            res.status(500).json({ error: 'Error fetching additional recipes' });
-          } else {
-            // Add the loaded unique recipe IDs to the global array
-            addLoadedRecipeIds(additionalRecipes);
-
-            // Concatenate the additional recipes with the unique recipes
-            const allUniqueRecipes = uniqueRecipes.concat(additionalRecipes);
-
-            // Send the unique recipes as the response
-            res.json({ recipes: allUniqueRecipes });
-          }
-        });
-      } else {
-        // Add the loaded unique recipe IDs to the global array
-        addLoadedRecipeIds(uniqueRecipes);
-
-        // Send the unique recipes as the response
-        res.json({ recipes: uniqueRecipes });
-      }
-    }
-  });
-});
 
 app.get('/render-home-card', isAuthenticated, (req, res) => {
   const recipe = req.query.recipe;
@@ -556,8 +596,21 @@ app.post('/likes-content/:id', isAuthenticated, (req, res) => {
 });
 
 
+
+// Function to add loaded recipe IDs to the global array for search results
+function addLoadedSearchRecipeIds(recipes) {
+  recipes.forEach((recipe) => {
+    loadedSearchRecipeIds[recipe.id] = true;
+  });
+}
+
+
+// Search route
 app.get('/search', isAuthenticated, (req, res) => {
   const searchQuery = req.query.query;
+
+  // Clear the array for search results when performing a new search
+  loadedSearchRecipeIds = {};
 
   // Store the search query in a session or as a cookie
   req.session.searchQuery = searchQuery;
@@ -568,29 +621,62 @@ app.get('/search', isAuthenticated, (req, res) => {
       console.error('Error searching for recipes:', err);
       res.render('error');
     } else {
+      // Add the initially loaded recipe IDs for search results to the global array
+      addLoadedSearchRecipeIds(searchResults);
+
       // Render a search results page with the matching recipes
       res.render('search-results', { searchResults });
     }
   });
 });
 
-queriesLoadedOnHome = 0;
 
-// Route to load more queries
+// Route to load more search results
 app.get('/load-more-queries', isAuthenticated, (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = 5; // Number of queries to load per request
-  const offset = (page - 1) * pageSize + queriesLoadedOnHome;
+  const offset = (page - 1) * pageSize;
 
   // Retrieve the search query from the session or cookie
   const searchQuery = req.session.searchQuery || '';
 
-  db.all('SELECT id, Title, Instructions, Image_Name FROM recipes WHERE Title LIKE ? LIMIT ? OFFSET ?;', [`%${searchQuery}%`, pageSize, offset], (err, recipes) => {
+  // Fetch more search results from the database
+  db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes WHERE Title LIKE ? LIMIT ${pageSize} OFFSET ${offset};`, [`%${searchQuery}%`], (err, recipes) => {
     if (err || !recipes) {
       console.error('Error fetching more recipes queries:', err);
       res.status(500).json({ error: 'Error fetching more recipes queries' });
     } else {
-      res.json({ recipes });
+      // Filter out any duplicate recipe IDs for search results
+      const uniqueSearchRecipes = recipes.filter((recipe) => !loadedSearchRecipeIds[recipe.id]);
+
+      // Calculate how many more unique recipes are needed to reach 5
+      const neededUniqueSearchRecipesCount = 5 - uniqueSearchRecipes.length;
+
+      if (neededUniqueSearchRecipesCount > 0) {
+        // Fetch additional unique recipes for search results to make up the count
+        db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes WHERE Title LIKE ? AND id NOT IN (${Object.keys(loadedSearchRecipeIds).join(',')}) LIMIT ${neededUniqueSearchRecipesCount};`, [`%${searchQuery}%`], (err, additionalSearchRecipes) => {
+          if (err || !additionalSearchRecipes) {
+            console.error('Error fetching additional recipes queries:', err);
+            res.status(500).json({ error: 'Error fetching additional recipes queries' });
+          } else {
+            // Add the loaded unique recipe IDs for search results to the global array
+            addLoadedSearchRecipeIds(additionalSearchRecipes);
+
+            // Concatenate the additional search recipes with the unique search recipes
+            const allUniqueSearchRecipes = uniqueSearchRecipes.concat(additionalSearchRecipes);
+
+            // Send the unique search recipes as the response
+            res.json({ recipes: allUniqueSearchRecipes });
+          }
+        });
+      } else {
+        // Add the loaded unique recipe IDs for search results to the global array
+        addLoadedSearchRecipeIds(uniqueSearchRecipes);
+
+        // Send the unique search recipes as the response
+        res.json({ recipes: uniqueSearchRecipes });
+        console.log( loadedSearchRecipeIds)
+      }
     }
   });
 });
