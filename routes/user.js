@@ -16,7 +16,7 @@ router.get("/create-new-recipe", (req, res) => {
 router.post("/creating-new-recipe", (req, res) => {
   var { recipeTitle, ingredientsList, instructionsList, imageInput } = req.body;
   if (!Array.isArray(ingredientsList))
-  ingredientsList = [ingredientsList].flat();
+    ingredientsList = [ingredientsList].flat();
   if (!Array.isArray(instructionsList))
     instructionsList = [instructionsList].flat();
   const userId = req.user.id;
