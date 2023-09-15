@@ -693,6 +693,8 @@ app.get('/settings', isAuthenticated, (req, res) => {
   });
 });
 
+
+//Route to delete account
 app.post('/delete-account', (req, res) => {
   const userId = req.user.id;
   db.run('DELETE FROM users WHERE id = ?', [userId], (err) => {
@@ -713,7 +715,7 @@ app.post('/delete-account', (req, res) => {
   });
 });
 
-  // Start the server
-  app.listen(port, () => {
-    console.log('App listening on port 3000');
-  });
+// Start the server
+app.listen(port, () => {
+  console.log('App listening on port 3000');
+});
