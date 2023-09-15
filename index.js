@@ -355,6 +355,37 @@ app.get('/', notAuthenticated, (req, res) => {
   res.render("landing");
 });
 
+//test recommendation engine(no point implementing not enough users to create an accurate recommendation)
+// Function to calculate recipe recommendations based on user likes
+function getRecipeRecommendations(userId, callback) {
+  // Step 1: Get the recipe IDs liked by the target user
+  db.all('SELECT recipe_id FROM user_likes WHERE user_id = ?', [userId], (err, likedRecipes) => {
+    if (err) {
+      console.error('Error fetching liked recipes:', err);
+      return callback([]);
+    }
+
+    const likedRecipeIds = likedRecipes.map((row) => row.recipe_id);
+
+    // Step 2: Find recipes liked by other users who liked similar recipes
+    db.all(`
+      SELECT DISTINCT r.*
+      FROM user_likes ul
+      JOIN recipes r ON ul.recipe_id = r.id
+      WHERE ul.user_id != ? 
+      AND ul.recipe_id NOT IN (${likedRecipeIds.join(',')})
+      LIMIT 10; -- Limit the number of recommendations
+    `, [userId], (err, recommendedRecipes) => {
+      if (err) {
+        console.error('Error fetching recommended recipes:', err);
+        return callback([]);
+      }
+
+      callback(recommendedRecipes);
+    });
+  });
+}
+
 //Variable to Track Loaded Recipes
 let recipesLoadedOnHome = 0;
 
