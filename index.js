@@ -694,7 +694,7 @@ app.get('/settings', isAuthenticated, (req, res) => {
 });
 
 // Handle the form submission to update user settings
-app.post('/update-blog-settings', isAuthenticated, (req, res, next) => {
+app.post('/update-settings', isAuthenticated, (req, res, next) => {
   // Get values from the request body
   const { firstName, lastName, username, bio } = req.body;
   const userId = req.user.id;
