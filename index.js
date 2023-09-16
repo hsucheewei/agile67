@@ -549,9 +549,9 @@ app.get('/create-new-recipe', isAuthenticated, (req, res) => {
   res.render("create-new-recipe")
 });
 
-//leaderboard 
+//leaderboard ranked by total no. likes
 app.get('/leaderboard', isAuthenticated, (req, res) => {
-  db.all('SELECT id,Title,Image_Name FROM recipes LIMIT 10 OFFSET 20;', (err, recipes) => {
+  db.all('SELECT id,Title,Image_Name FROM recipes ORDER BY Total_Likes DESC LIMIT 10;', (err, recipes) => {
     if (err || !recipes) {
       console.error('Error fetching recipes:', err);
       res.render('error');
@@ -562,12 +562,11 @@ app.get('/leaderboard', isAuthenticated, (req, res) => {
 });
 
 
-
-
 app.get('/render-home-card', isAuthenticated, (req, res) => {
   const recipe = req.query.recipe;
   res.render('home-card', { recipe }); // Use the appropriate view name
 });
+
 
 //likes db
 app.get('/leaderboard', isAuthenticated, (req, res) => {
@@ -577,7 +576,7 @@ app.get('/leaderboard', isAuthenticated, (req, res) => {
       return res.status(500).send('Internal Server Error');
     }
     res.render('leaderboard', { recipes });
-  }); s
+  }); 
 });
 
 app.post('/likes-content/:id', isAuthenticated, (req, res) => {
@@ -679,6 +678,105 @@ app.get('/load-more-queries', isAuthenticated, (req, res) => {
     }
   });
 });
+
+
+
+
+function getCategoryColumnName(categoryName) {
+  switch (categoryName) {
+    case 'Chicken':
+      return 'Is_Chicken';
+    case 'Beef':
+      return 'Is_Beef';
+    case 'Pork':
+      return 'Is_Pork';
+    case 'Seafood':
+      return 'Is_Seafood';
+    case 'Vegetarian':
+      return 'Is_Vegetarian';
+    default:
+      return null; // Invalid category name
+  }
+};
+
+//Selecting based on categories 
+
+//add loaded recipe ID for category results
+function addLoadedCategoryRecipeIds(recipes) {
+  recipes.forEach((recipe) => {
+    loadedCategoryRecipeIds[recipe.id] = true;
+  });
+}
+
+
+//category route 
+app.get('/category/:categoryName', isAuthenticated, (req, res) => {
+  const categoryName = req.params.categoryName;
+
+  // Clear the array for category results when switching categories
+  loadedCategoryRecipeIds = {};
+
+  const categoryColumnName = getCategoryColumnName(categoryName);
+  const query = `SELECT * FROM recipes WHERE ${categoryColumnName} = 1 LIMIT 5`;
+
+  db.all(query, (err, categoryResults) => {
+    if (err) {
+      console.error(`Error fetching ${categoryName} recipes:`, err);
+      res.render('error');
+    } else {
+      console.log("error");
+      // Add the initially loaded recipe IDs for category results to the global array
+      addLoadedCategoryRecipeIds(categoryResults);
+
+      // Render a category page with the matching recipes
+      res.render('category-results', { categoryResults: categoryResults });
+    }
+  });
+});
+
+app.get('/load-more-category-recipes/:categoryName', isAuthenticated, (req, res) => {
+  const categoryName = req.params.categoryName;
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = 5;
+  const offset = (page - 1) * pageSize;
+
+  const categoryColumnName = getCategoryColumnName(categoryName);
+  const query = `SELECT id, Title, Instructions, Image_Name FROM recipes WHERE ${categoryColumnName} = 1 LIMIT ${pageSize} OFFSET ${offset}`;
+
+  db.all(query, (err, recipes) => {
+    if (err || !recipes) {
+      console.error(`Error fetching more ${categoryName} recipes:`, err);
+      res.status(500).json({ error: `Error fetching more ${categoryName} recipes` });
+    } else {
+      const uniqueCategoryRecipes = recipes.filter((recipe) => !loadedCategoryRecipeIds[recipe.id]);
+
+      const neededUniqueCategoryRecipesCount = 5 - uniqueCategoryRecipes.length;
+
+      if (neededUniqueCategoryRecipesCount > 0) {
+        db.all(`SELECT id, Title, Instructions, Image_Name FROM recipes WHERE ${categoryColumnName} = 1 AND id NOT IN (${Object.keys(loadedCategoryRecipeIds).join(',')}) LIMIT ${neededUniqueCategoryRecipesCount};`, (err, additionalCategoryRecipes) => {
+          if (err || !additionalCategoryRecipes) {
+            console.error(`Error fetching additional ${categoryName} recipes:`, err);
+            res.status(500).json({ error: `Error fetching additional ${categoryName} recipes` });
+          } else {
+            addLoadedCategoryRecipeIds(additionalCategoryRecipes);
+
+            const allUniqueCategoryRecipes = uniqueCategoryRecipes.concat(additionalCategoryRecipes);
+
+            res.json({ recipes: allUniqueCategoryRecipes });
+          }
+        });
+      } else {
+        addLoadedCategoryRecipeIds(uniqueCategoryRecipes);
+
+        res.json({ recipes: uniqueCategoryRecipes });
+        console.log(loadedCategoryRecipeIds);
+      }
+    }
+  });
+});
+
+
+
 
 //Render settings page
 app.get('/settings', isAuthenticated, (req, res) => {
