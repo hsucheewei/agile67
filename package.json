@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "A template for the mid-term assignment",
   "main": "index.js",
-  "scripts": {    "test": "echo \"Error: no test specified\" && exit 1",
-    "build-db": "sqlite3 ./database.db < ./db_schema.sql",    "start": "node index.js"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-db": "sqlite3 ./database.db < ./db_schema.sql",
+    "start": "node index.js"
   },
   "author": "Simon Katan",
   "license": "ISC",
@@ -15,7 +17,7 @@
     "connect-sqlite3": "^0.9.13",
     "crypto": "^1.0.1",
     "csv-parser": "^3.0.0",
-    "dotenv": "^16.1.4",
+    "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-flash": "^0.0.2",
